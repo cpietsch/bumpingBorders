@@ -18,7 +18,8 @@ var settings = {
 	autoAnimation: false,
 	showInfoPopup: true,
 	initialLatLng:[52.08119, 14.52667],
-	initialZoom:9
+	initialZoom:9,
+	overalZoomLevel:8
 };
 
 var map = L.map('map',{
@@ -28,14 +29,14 @@ var map = L.map('map',{
 	worldCopyJump:false,
 	fadeAnimation:false,
 	markerZoomAnimation:false,
-	zoomAnimation:false,
+	zoomAnimation:true,
 	boxZoom:false
 }).setView(settings.initialLatLng, settings.initialZoom);
 
 // Map style
 L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
 	reuseTiles:true,
-	updateWhenIdle:true,
+	//updateWhenIdle:true,
 	unloadInvisibleTiles:false
 }).addTo(map); // Stamen Toner
 //L.tileLayer('http://localhost:20008/tile/border-bumps/{z}/{x}/{y}.png?updated=' + new Date().getTime()).addTo(map); // Local TileMill 
@@ -66,7 +67,29 @@ d3.tsv("data/incidents.tsv", function(data) {
 			
 	// Create marker for each incident
 	data.forEach(function(incident, index) {
-	
+
+		// Radius of cell
+		var signalFactor = incident.RSSI / -100;
+		var radius = signalFactor * settings.incidentRadiusMeter;
+		
+		// Visual radial expansion style
+		L.circle([incident.Lat, incident.Lng], radius * 0.8, {
+			fillOpacity:0.3,
+			fillColor:'red',
+			stroke:false
+		}).addTo(map);
+
+		L.circle([incident.Lat, incident.Lng], radius * 0.6, {
+			fillOpacity:0.3,
+			fillColor:'red',
+			stroke:false,
+			color:'white',
+			weight:1,
+			opacity:0.8
+		}).addTo(map);
+		
+		// Date formating and popup text
+		
 		var d= incident.TimeStamp;
 		var dateOut= "";
 		dateOut += d.substring(6, 8)+"-"+d.substring(4, 6)+"-"+d.substring(0, 4)+" ";
@@ -81,10 +104,7 @@ d3.tsv("data/incidents.tsv", function(data) {
 		popupText += "Lat: <span>" + incident.Lat + "</span><br/>";
 		popupText += "Lng: <span>" + incident.Lng + "</span><br/>";
 		popupText += "Device: <span>" + incident.Device + "</span><br/>";
-
-		// Radius of cell
-		var signalFactor = incident.RSSI / -100;
-		var radius = signalFactor * settings.incidentRadiusMeter;
+	
 		
 		// Incident circle (size depends on RSSI)
 		var marker = L.circle([incident.Lat, incident.Lng], radius, {
@@ -116,25 +136,16 @@ d3.tsv("data/incidents.tsv", function(data) {
 			stroke:false,
 			color:'#278073',
 			weight:1,
-			opacity:0.8,
+			opacity:0.8
 		}).addTo(map);
 		
 		// Visual radial expansion style
 		L.circle([incident.Lat, incident.Lng], radius * 0.8, {
-			fillOpacity:0.3,
-			fillColor:'red',
+			fill:false,
 			stroke:true,
 			color:'white',
 			weight:4,
-			opacity:0.8,
-		}).addTo(map);
-		L.circle([incident.Lat, incident.Lng], radius * 0.6, {
-			fillOpacity:0.3,
-			fillColor:'red',
-			stroke:false,
-			color:'white',
-			weight:1,
-			opacity:0.8,
+			opacity:0.8
 		}).addTo(map);
 		
 	})
@@ -189,6 +200,15 @@ map.on('moveend', function(e) {
 
 	// Select Incident after zoom and pan animation
 	var incidentMarker = markerArray[selectedIncidentMarkerIndex];
+	
+	if (incidentMarker && incidentMarker.animateToOveral) {
+		setTimeout(function(){
+			map.setView(incidentMarker._latlng, settings.incidentZoomLevel);
+		},400);
+		
+		incidentMarker.animateToOveral = false;
+	}
+	
 	if (incidentMarker && incidentMarker.animateToIncident) {
 		selectIncident(incidentMarker);
 		incidentMarker.animateToIncident = false;
@@ -338,8 +358,8 @@ function animateToIncident(/* Marker */ incidentMarker) {
 		selectIncident(incidentMarker);
 	} else {
 		//start animation
-		incidentMarker.animateToIncident = true;
-		map.setView(incidentMarker._latlng, settings.incidentZoomLevel);
+		incidentMarker.animateToOveral = true;
+		map.setView(incidentMarker._latlng, settings.overalZoomLevel);
 	}
 }
 
