@@ -25,13 +25,20 @@ var map = L.map('map',{
 	inertia:false,
 	minZoom:4,
 	maxZoom:10,
-	worldCopyJump:false
-	//fadeAnimation:true,
+	worldCopyJump:false,
+	fadeAnimation:false,
+	markerZoomAnimation:false,
+	zoomAnimation:false,
+	boxZoom:false
 	//zoomAnimation:true
 }).setView(settings.initialLatLng, settings.initialZoom);
 
 // Map style
-L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png').addTo(map); // Stamen Toner
+L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
+	reuseTiles:true,
+	updateWhenIdle:true,
+	unloadInvisibleTiles:false
+}).addTo(map); // Stamen Toner
 //L.tileLayer('http://localhost:20008/tile/border-bumps/{z}/{x}/{y}.png?updated=' + new Date().getTime()).addTo(map); // Local TileMill 
 //L.tileLayer('http://192.168.12.126:8888/v2/border-bumps-4-10/{z}/{x}/{y}.png').addTo(map); // Julian's local server
 
@@ -155,6 +162,8 @@ d3.json("data/europe.geo.json", function(collection) {
 
 	// TEST Select one incident
 	//animateToIncident(testIncident);
+	
+	//animateCenterZoom(map,)
 
 });
 
