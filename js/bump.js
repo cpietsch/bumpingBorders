@@ -19,7 +19,7 @@ var settings = {
 	showInfoPopup: true,
 	initialLatLng:[52.08119, 14.52667],
 	initialZoom:9,
-	overalZoomLevel:8
+	overalZoomLevel:7
 };
 
 var map = L.map('map',{
@@ -122,29 +122,6 @@ d3.tsv("data/incidents.tsv", function(data) {
 		center.lat -= nearestPointData.direction[0];
 		center.lng -= nearestPointData.direction[1];
 		
-		// Incident circle (size depends on RSSI)
-		var marker = L.circle(center, radius, {
-		    color: 'white',
-			opacity:1,
-		    fillColor: 'red',
-		    fillOpacity: 0.2,
-			stroke:false,
-			weight:5,
-			title: incident.CurCell_Provider,
-		}).addTo(map)
-		.bindPopup(popupText, {
-			offset: new L.Point(0, 0),
-			autoPan: false
-		})
-		.on("click", function() {
-			//console.log("Clicked on marker", this)
-			animateToIncident(this);
-		});
-		marker._incident = incident;
-		marker._isBumped = false;
-		marker._index = index;
-		markerArray.push(marker);
-		
 		// Visual radial expansion style
 		L.circle(center, radius * 0.8, {
 			fillOpacity:0.3,
@@ -163,17 +140,41 @@ d3.tsv("data/incidents.tsv", function(data) {
 			opacity:0.8,
 		}).addTo(map);
 		
+		// Incident circle (size depends on RSSI)
+		var marker = L.circle(center, radius, {
+		    color: 'white',
+			opacity:1,
+		    fillColor: 'red',
+		    fillOpacity: 0.2,
+			stroke:false,
+			weight:5,
+			title: incident.CurCell_Provider,
+		}).addTo(map)
+		.on("click", function() {
+			//console.log("Clicked on marker", this)
+			animateToIncident(this);
+		});
+
 		// Incident point (center of incident)
-		L.circle(incident.latlng, 1000, {
+		var incidentCirle = L.circle(incident.latlng, 1000, {
 			fillOpacity:1,
 			fillColor:'#580E05',
 			stroke:true,
 			color:'white',
 			weight:2,
 			opacity:0.8,
-		}).addTo(map);
+		})
+		.addTo(map)
+		.bindPopup(popupText, {
+			//offset: new L.Point(0, 7),
+			autoPan: false
+		})
 		
-		
+		marker._incident = incident;
+		marker._isBumped = false;
+		marker._index = index;
+		marker._incidentCirle = incidentCirle;
+		markerArray.push(marker);
 		
 	})
 });
@@ -218,7 +219,7 @@ map.on('moveend', function(e) {
 		setTimeout(function(){
 			map.setView(incidentMarker._incident.latlng, settings.incidentZoomLevel);
 			incidentMarker.animateToIncident = true;
-		},400);
+		},800);
 		
 		incidentMarker.animateToOveral = false;
 	}
@@ -325,7 +326,7 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 	if (incidentMarker && settings.showInfoPopup) {
 		console.log("openpopup", incidentMarker)
 		//updatePopupOffset(incidentMarker);
-		incidentMarker.openPopup();
+		incidentMarker._incidentCirle.openPopup();
 	}
 }
 
@@ -360,7 +361,7 @@ function animateToIncident(/* Marker */ incidentMarker) {
 	// close old popup
 	if (markerArray[selectedIncidentMarkerIndex]) {
 		if (settings.showInfoPopup) {
-			markerArray[selectedIncidentMarkerIndex].closePopup();
+			markerArray[selectedIncidentMarkerIndex]._incidentCirle.closePopup();
 		}
 	}
 
