@@ -62,94 +62,6 @@ restartMarkerAnimation();
 
 // -------------------------------------------------
 
-// Load incidents
-d3.tsv("data/incidents.tsv", function(data) {
-			
-	// Create marker for each incident
-	data.forEach(function(incident, index) {
-
-		// Radius of cell
-		var signalFactor = incident.RSSI / -100;
-		var radius = signalFactor * settings.incidentRadiusMeter;
-		
-		// Visual radial expansion style
-		L.circle([incident.Lat, incident.Lng], radius * 0.8, {
-			fillOpacity:0.3,
-			fillColor:'red',
-			stroke:false
-		}).addTo(map);
-
-		L.circle([incident.Lat, incident.Lng], radius * 0.6, {
-			fillOpacity:0.3,
-			fillColor:'red',
-			stroke:false,
-			color:'white',
-			weight:1,
-			opacity:0.8
-		}).addTo(map);
-		
-		// Date formating and popup text
-		
-		var d= incident.TimeStamp;
-		var dateOut= "";
-		dateOut += d.substring(6, 8)+"-"+d.substring(4, 6)+"-"+d.substring(0, 4)+" ";
-		dateOut += d.substring(9, 11)+":"+d.substring(11, 13)+":"+d.substring(13, 15);
-	
-		var popupText = "";
-		popupText += "TimeStamp: <span>" + dateOut + "</span><br/>";
-		popupText += "MCC: <span>" + incident.CurMCC_ID + "</span><br/>";
-		popupText += "Cell_ID: <span>" + incident.CurCell_ID + "</span><br/>";
-		popupText += "Cell_Owner: <span>" + incident.CurCell_Provider + "</span><br/>";
-		popupText += "RSSI: <span>" + incident.RSSI + "</span><br/>";
-		popupText += "Lat: <span>" + incident.Lat + "</span><br/>";
-		popupText += "Lng: <span>" + incident.Lng + "</span><br/>";
-		popupText += "Device: <span>" + incident.Device + "</span><br/>";
-	
-		
-		// Incident circle (size depends on RSSI)
-		var marker = L.circle([incident.Lat, incident.Lng], radius, {
-		    color: 'white',
-			opacity:1,
-		    fillColor: 'red',
-		    fillOpacity: 0.2,
-			stroke:false,
-			weight:5,
-			title: incident.CurCell_Provider,
-		}).addTo(map)
-		.bindPopup(popupText, {
-			offset: new L.Point(0, 0),
-			autoPan: false
-		})
-		.on("click", function() {
-			//console.log("Clicked on marker", this)
-			animateToIncident(this);
-		});
-		marker._incident = incident;
-		marker._isBumped = false;
-		marker._index = index;
-		markerArray.push(marker);
-		
-		// Incident point (center of circle marker)
-		L.circle([incident.Lat, incident.Lng], 300, {
-			fillOpacity:1,
-			fillColor:'#580E05',
-			stroke:false,
-			color:'#278073',
-			weight:1,
-			opacity:0.8
-		}).addTo(map);
-		
-		// Visual radial expansion style
-		L.circle([incident.Lat, incident.Lng], radius * 0.8, {
-			fill:false,
-			stroke:true,
-			color:'white',
-			weight:4,
-			opacity:0.8
-		}).addTo(map);
-		
-	})
-});
 
 // Load country polygons
 d3.json("data/europe.geo.json", function(collection) {
@@ -183,7 +95,108 @@ d3.json("data/europe.geo.json", function(collection) {
 
 	}).addTo(map);
 
+	// Load incidents after loading countries
+	loadIncidentData();
 });
+
+
+function loadIncidentData() {
+// Load incidents
+d3.tsv("data/incidents.tsv", function(data) {
+			
+	// Create marker for each incident
+	data.forEach(function(incident, index) {
+
+		var popupText = createPopupText(incident);
+		
+		// Radius of cell
+		var signalFactor = incident.RSSI / -100;
+		var radius = signalFactor * settings.incidentRadiusMeter;
+		
+		// Position of marker (depending on incident and nearest border point)
+		incident.latlng = new L.LatLng(incident.Lat, incident.Lng); // original
+		var closestToLayer = findClosestLayer(incident.CurMCC_CountryCode, incident.latlng);
+		var nearestPointData = _findNearestPointData(closestToLayer._latlngs, incident.latlng);
+
+		center = new L.LatLng(incident.Lat, incident.Lng); // center of marker
+		center.lat -= nearestPointData.direction[0];
+		center.lng -= nearestPointData.direction[1];
+		
+		// Incident circle (size depends on RSSI)
+		var marker = L.circle(center, radius, {
+		    color: 'white',
+			opacity:1,
+		    fillColor: 'red',
+		    fillOpacity: 0.2,
+			stroke:false,
+			weight:5,
+			title: incident.CurCell_Provider,
+		}).addTo(map)
+		.bindPopup(popupText, {
+			offset: new L.Point(0, 0),
+			autoPan: false
+		})
+		.on("click", function() {
+			//console.log("Clicked on marker", this)
+			animateToIncident(this);
+		});
+		marker._incident = incident;
+		marker._isBumped = false;
+		marker._index = index;
+		markerArray.push(marker);
+		
+		// Visual radial expansion style
+		L.circle(center, radius * 0.8, {
+			fillOpacity:0.3,
+			fillColor:'red',
+			stroke:false,
+			color:'white',
+			weight:4,
+			opacity:0.8,
+		}).addTo(map);
+		L.circle(center, radius * 0.6, {
+			fillOpacity:0.3,
+			fillColor:'red',
+			stroke:false,
+			color:'white',
+			weight:1,
+			opacity:0.8,
+		}).addTo(map);
+		
+		// Incident point (center of incident)
+		L.circle(incident.latlng, 1000, {
+			fillOpacity:1,
+			fillColor:'#580E05',
+			stroke:true,
+			color:'white',
+			weight:2,
+			opacity:0.8,
+		}).addTo(map);
+		
+		
+		
+	})
+});
+}
+
+function createPopupText(incident) {
+	var d= incident.TimeStamp;
+	var dateOut= "";
+	dateOut += d.substring(6, 8)+"-"+d.substring(4, 6)+"-"+d.substring(0, 4)+" ";
+	dateOut += d.substring(9, 11)+":"+d.substring(11, 13)+":"+d.substring(13, 15);
+	
+	var popupText = "";
+	popupText += "TimeStamp: <span>" + dateOut + "</span><br/>";
+	popupText += "MCC: <span>" + incident.CurMCC_ID + "</span><br/>";
+	popupText += "Cell_ID: <span>" + incident.CurCell_ID + "</span><br/>";
+	popupText += "Cell_Owner: <span>" + incident.CurCell_Provider + "</span><br/>";
+	popupText += "RSSI: <span>" + incident.RSSI + "</span><br/>";
+	popupText += "Lat: <span>" + incident.Lat + "</span><br/>";
+	popupText += "Lng: <span>" + incident.Lng + "</span><br/>";
+	popupText += "Device: <span>" + incident.Device + "</span><br/>";
+	
+	return popupText;
+}
 
 
 // Interaction handlers -----------------------------------
@@ -203,7 +216,8 @@ map.on('moveend', function(e) {
 	
 	if (incidentMarker && incidentMarker.animateToOveral) {
 		setTimeout(function(){
-			map.setView(incidentMarker._latlng, settings.incidentZoomLevel);
+			map.setView(incidentMarker._incident.latlng, settings.incidentZoomLevel);
+			incidentMarker.animateToIncident = true;
 		},400);
 		
 		incidentMarker.animateToOveral = false;
@@ -296,7 +310,7 @@ function selectIncident(/* Marker */ incidentMarker) {
 		bumpCountries(
 			incidentMarker._incident.LastMCC_CountryCode,
 			incidentMarker._incident.CurMCC_CountryCode,
-			incidentMarker._latlng
+			incidentMarker._incident.latlng
 		);
 	
 		// Do this only once
@@ -359,7 +373,7 @@ function animateToIncident(/* Marker */ incidentMarker) {
 	} else {
 		//start animation
 		incidentMarker.animateToOveral = true;
-		map.setView(incidentMarker._latlng, settings.overalZoomLevel);
+		map.setView(incidentMarker._incident.latlng, settings.overalZoomLevel);
 	}
 }
 
@@ -375,6 +389,7 @@ function bumpCountries(/* String */ fromCountryCode, /* String */ toCountryCode,
 
 function findClosestLayer(/* String */ countryCode, /* L.LatLng */ pos) {
 	var countryLayers = countryLayerMap[countryCode];
+	console.log("countryLayers: " + countryLayers);
 	var minDist = Infinity;
 	var nearestLayerId;
 	for (var id in countryLayers) {
