@@ -34,14 +34,13 @@ var map = L.map('map',{
 }).setView(settings.initialLatLng, settings.initialZoom);
 
 // Map style
-L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
+var tileServerString = 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png'; // Stamen Toner
+//var tileServerString = 'http://localhost:20008/tile/border-bumps/{z}/{x}/{y}.png?updated=' + new Date().getTime() // Local TileMill 
+L.tileLayer(tileServerString, {
 	reuseTiles:true,
 	//updateWhenIdle:true,
 	unloadInvisibleTiles:false
-}).addTo(map); // Stamen Toner
-//L.tileLayer('http://localhost:20008/tile/border-bumps/{z}/{x}/{y}.png?updated=' + new Date().getTime()).addTo(map); // Local TileMill 
-//L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png').addTo(map); // Stamen Toner
-
+}).addTo(map); 
 
 // Data -------------------------------------------
 
