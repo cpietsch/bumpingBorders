@@ -297,7 +297,7 @@
 .leaflet-popup-tip-container {
 	margin: 0 auto;
 	width: 40px;
-	height: 0px; /* Till (original: 20)*/
+	height: 20px; /* Till (original: 20)*/
 	position: relative;
 	overflow: hidden;
 	}
