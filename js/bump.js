@@ -7,7 +7,7 @@
 	
 var settings = {
 	incidentZoomLevel: 9,
-	incidentRadiusMeter: 10000,
+	incidentRadiusMeter: 20000,
 	borderOpacity: 0.8,
 	borderColor:'#000000',
 	showDebug: false,
@@ -30,7 +30,6 @@ var map = L.map('map',{
 	markerZoomAnimation:false,
 	zoomAnimation:false,
 	boxZoom:false
-	//zoomAnimation:true
 }).setView(settings.initialLatLng, settings.initialZoom);
 
 // Map style
@@ -40,7 +39,7 @@ L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
 	unloadInvisibleTiles:false
 }).addTo(map); // Stamen Toner
 //L.tileLayer('http://localhost:20008/tile/border-bumps/{z}/{x}/{y}.png?updated=' + new Date().getTime()).addTo(map); // Local TileMill 
-//L.tileLayer('http://192.168.12.126:8888/v2/border-bumps-4-10/{z}/{x}/{y}.png').addTo(map); // Julian's local server
+//L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png').addTo(map); // Stamen Toner
 
 
 // Data -------------------------------------------
@@ -82,15 +81,20 @@ d3.tsv("data/incidents.tsv", function(data) {
 		popupText += "Lat: <span>" + incident.Lat + "</span><br/>";
 		popupText += "Lng: <span>" + incident.Lng + "</span><br/>";
 		popupText += "Device: <span>" + incident.Device + "</span><br/>";
-	
-		// Incident circle (size depends on RSSI).
-		var marker = L.circleMarker([incident.Lat, incident.Lng], {
-		    color: 'red',
-			opacity:0.9,
+
+		// Radius of cell
+		var signalFactor = incident.RSSI / -100;
+		var radius = signalFactor * settings.incidentRadiusMeter;
+		
+		// Incident circle (size depends on RSSI)
+		var marker = L.circle([incident.Lat, incident.Lng], radius, {
+		    color: 'white',
+			opacity:1,
 		    fillColor: 'red',
 		    fillOpacity: 0.2,
 			stroke:false,
-			title: incident.CurCell_Provider
+			weight:5,
+			title: incident.CurCell_Provider,
 		}).addTo(map)
 		.bindPopup(popupText, {
 			offset: new L.Point(0, 0),
@@ -104,7 +108,7 @@ d3.tsv("data/incidents.tsv", function(data) {
 		marker._isBumped = false;
 		marker._index = index;
 		markerArray.push(marker);
-	
+		
 		// Incident point (center of circle marker)
 		L.circle([incident.Lat, incident.Lng], 300, {
 			fillOpacity:1,
@@ -112,20 +116,28 @@ d3.tsv("data/incidents.tsv", function(data) {
 			stroke:false,
 			color:'#278073',
 			weight:1,
-			opacity:0.8
+			opacity:0.8,
 		}).addTo(map);
 		
-		L.circle([incident.Lat, incident.Lng], 3000, {
-			fillOpacity:0.2,
+		// Visual radial expansion style
+		L.circle([incident.Lat, incident.Lng], radius * 0.8, {
+			fillOpacity:0.3,
+			fillColor:'red',
+			stroke:true,
+			color:'white',
+			weight:4,
+			opacity:0.8,
+		}).addTo(map);
+		L.circle([incident.Lat, incident.Lng], radius * 0.6, {
+			fillOpacity:0.3,
 			fillColor:'red',
 			stroke:false,
-			color:'red',
+			color:'white',
 			weight:1,
-			opacity:0.2
+			opacity:0.8,
 		}).addTo(map);
+		
 	})
-
-	updateMarkerSizes();
 });
 
 // Load country polygons
@@ -160,11 +172,6 @@ d3.json("data/europe.geo.json", function(collection) {
 
 	}).addTo(map);
 
-	// TEST Select one incident
-	//animateToIncident(testIncident);
-	
-	//animateCenterZoom(map,)
-
 });
 
 
@@ -174,7 +181,7 @@ map.on('zoomend', function(e) {
 	//console.log("zoomend");
 
 	// Update all markers according to current zoom level
-	updateMarkerSizes();
+	//updateMarkerSizes();
 });
 
 map.on('moveend', function(e) {
@@ -227,19 +234,27 @@ function restartMarkerAnimation() {
 
 function updateMarkerSizes() {
 	markerArray.forEach(function(marker, index) {
-		var dbFactor = marker._incident.RSSI / -100;
-		var size = dbFactor * settings.incidentRadiusMeter * scale.pixelFactor;
-
-		//marker._path.setAttribute("transform", "rotate("+frame+","+marker._point.x+","+marker._point.y+")");
-
-		marker.setStyle({
-			weight: size / 30
-		})
-		marker.setRadius(size);
-		
-		// Also update
-		//updatePopupOffset(marker);
+		updateMarkerSize(marker);
 	});
+}
+
+function updateMarkerSize(/* Marker */ marker) {
+	// Could be used for border adaptation and popup offset
+	
+	/*
+	var dbFactor = marker._incident.RSSI / -100;
+	var size = dbFactor * settings.incidentRadiusMeter * scale.pixelFactor;
+
+	//marker._path.setAttribute("transform", "rotate("+frame+","+marker._point.x+","+marker._point.y+")");
+
+	marker.setStyle({
+	//	weight: size / 30
+	})
+	marker.setRadius(size);
+	
+	// Also update
+	//updatePopupOffset(marker);
+	*/
 }
 
 function gotoNextMarker() {
@@ -508,7 +523,7 @@ function transitionPoints(/* L.Layer */ countryLayer, /* Array<L.LatLng> */ poin
 
 	var originalLatLngs = countryLayer._latlngs;
 	//var nonBumpingPoints = getPointsWithoutPoints(originalLatLngs, points);
-	var tempCountryPolyline = new L.Polyline(originalLatLngs, {color: 'red', opacity: 0.7, weight: 3, dashArray:'5,15', fill: false, smoothFactor: 0}).addTo(map);
+	var tempCountryPolyline = new L.Polyline(originalLatLngs, {color: 'black', opacity: 0.7, weight: 3, dashArray:'5,15', fill: false, smoothFactor: 0}).addTo(map);
 
 	//console.log(tempCountryPolyline)
 	// Bump border around the incident
