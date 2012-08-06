@@ -76,7 +76,7 @@ d3.tsv("data/incidents.tsv", function(data) {
 		popupText += "Lng: <span>" + incident.Lng + "</span><br/>";
 		popupText += "Device: <span>" + incident.Device + "</span><br/>";
 	
-		// Incident circle (size depends on RSSI)
+		// Incident circle (size depends on RSSI).
 		var marker = L.circleMarker([incident.Lat, incident.Lng], {
 		    color: 'red',
 			opacity:0.9,
