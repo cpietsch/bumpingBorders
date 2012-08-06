@@ -1,0 +1,17 @@
+html, body {
+	margin:0;
+	padding:0;
+	height: 100%;
+	overflow: hidden;
+}
+
+#map {
+	height: auto !important;
+	min-height: 100%;
+    height: 100%;
+    position: relative; /* Required to absolutely position the footer */
+}
+
+#prevButton, #nextButton {
+	display:none;
+}
