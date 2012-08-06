@@ -307,14 +307,16 @@ function selectIncident(/* Marker */ incidentMarker) {
 
 	if (!incidentMarker._isBumped) {
 		// Bump the two countries of the incident
-		bumpCountries(
-			incidentMarker._incident.LastMCC_CountryCode,
-			incidentMarker._incident.CurMCC_CountryCode,
-			incidentMarker._incident.latlng
-		);
-	
-		// Do this only once
-		incidentMarker._isBumped = true;
+		setTimeout(function(){
+			bumpCountries(
+				incidentMarker._incident.LastMCC_CountryCode,
+				incidentMarker._incident.CurMCC_CountryCode,
+				incidentMarker._incident.latlng
+			);
+
+			// Do this only once
+			incidentMarker._isBumped = true;
+		}, 1000);
 	} else {
 		console.log("selectIncident > openIncidentPopup");
 		openIncidentPopup(incidentMarker);
@@ -389,7 +391,7 @@ function bumpCountries(/* String */ fromCountryCode, /* String */ toCountryCode,
 
 function findClosestLayer(/* String */ countryCode, /* L.LatLng */ pos) {
 	var countryLayers = countryLayerMap[countryCode];
-	console.log("countryLayers: " + countryLayers);
+	//console.log("countryLayers: " + countryLayers);
 	var minDist = Infinity;
 	var nearestLayerId;
 	for (var id in countryLayers) {
