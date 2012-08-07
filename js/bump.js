@@ -15,7 +15,7 @@ var settings = {
 	numBumpPoints: 6, // NB Only even numbers
 	animationInterval: 8000,
 	animationWaitInterval: 12000,
-	autoAnimation: true,
+	autoAnimation: false,
 	showInfoPopup: true,
 	initialLatLng:[52.08119, 14.52667],
 	initialZoom:9,
@@ -58,7 +58,7 @@ L.tileLayer(tileServerString, {
 var countryLayerMap = new Object();
 
 var markerArray = [];
-var selectedIncidentMarkerIndex = null;
+var selectedIncidentMarkerIndex = 0;
 
 // UI ---------------------------------------------
 
@@ -189,7 +189,7 @@ d3.tsv("data/incidents.tsv", function(data) {
 		
 	})
 	
-	openIncidentPopup(markerArray[0])
+	gotoNextMarker();
 });
 }
 
@@ -264,11 +264,6 @@ d3.select('#nextButton').on('click', function(e) {
 	//gotoNextMarker();
 });
 
-
-function _testPopup() {
-	var incidentMarker = markerArray[selectedIncidentMarkerIndex];
-	
-}
 
 // --------------------------------------------------------
 
