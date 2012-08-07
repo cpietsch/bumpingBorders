@@ -53,6 +53,7 @@ html, body {
 	background:#444;
 	border:1px solid #777;
 	margin:10px 10px 0px 10px;
+	position:relative;
 }
 #incidentHistory > div .name {
 	font-weight:bold;

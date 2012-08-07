@@ -341,9 +341,12 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 		var item = $('<div>')
 			.html(incidentDiv)
 			.prependTo('#incidentHistory')
-			.css('height',0)
+			.css('top',-120)
 			.animate({
-				'height':120
+				top:0
+			}, {
+				duration:1000,
+				easing:"cubic-bezier(0, 0.35, .5, 1.3)"
 			})
 		console.log()
 	}
