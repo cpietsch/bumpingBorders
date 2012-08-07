@@ -3,6 +3,8 @@
  * Can be used with a bounding box defining the map section.
  *
  * (c) 2012 Till Nagel, tillnagel.com
+ *
+ * Modified and ported to JavaScipt for BumpingBorders.
  */
 
 

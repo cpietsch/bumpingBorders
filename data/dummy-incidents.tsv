@@ -1,3 +1,4 @@
 TimeStamp	LastMCC_ID	LastMCC_CountryCode	CurMCC_ID	CurMCC_CountryCode	LastCell_ID	LastCell_Provider	CurCell_ID	CurCell_Provider	RSSI	Lat	Lng	User	Device
 1344362102166	n/a	FR	n/a	CH	n/a	O2	n/a	O2	-50	46.60228013300284	6.0150146484375	"Till"	"TEST: FR to CH"
 1344362109750	n/a	CH	n/a	FR	n/a	O2	n/a	O2	-50	46.41892578708076	5.94085693359375	"Till"	"TEST: CH to FR"
+1344361618901	n/a	FR	n/a	CH	n/a	O2	n/a	O2	-35	47.27922900257082	6.89404296875	"Till"	"SCHWEIZ TEST"

@@ -14,7 +14,7 @@ var settings = {
 	maxBumpPointsRadius: 15,
 	numBumpPoints: 6, // NB Only even numbers
 	animationInterval: 8000,
-	animationWaitInterval: 12000,
+	animationWaitInterval: 4000, // Full waiting time is awi+ai!
 	autoAnimation: true,
 	showInfoPopup: true,
 	initialLatLng:[52.08119, 14.52667],
@@ -73,10 +73,26 @@ restartMarkerAnimation();
 
 // -------------------------------------------------
 
+// All geoJson features. Will be re-parsed on reset.
+var originalCollection;
+// A layer with all country layers. Will be cleared on reset.
+var allCountriesLayer;
+
 
 // Load country polygons
 d3.json("data/europe.geo.json", function(collection) {
-	L.geoJson(collection, {
+	originalCollection = collection;
+
+	addCountriesToMap(collection);
+
+	// Load incidents after loading countries
+	loadIncidentData();
+});
+
+function addCountriesToMap(collection) {
+	countryLayerMap = new Object();
+	
+	allCountriesLayer = L.geoJson(collection, {
 
 		style: function (feature) {
 			var myStyle = {
@@ -105,10 +121,7 @@ d3.json("data/europe.geo.json", function(collection) {
 		}
 
 	}).addTo(map);
-
-	// Load incidents after loading countries
-	loadIncidentData();
-});
+}
 
 
 function loadIncidentData() {
@@ -319,11 +332,30 @@ function gotoNextMarker() {
 
 	selectedIncidentMarkerIndex++;
 	if (selectedIncidentMarkerIndex >= markerArray.length) {
-		selectedIncidentMarkerIndex = 0; 
+		selectedIncidentMarkerIndex = 0;
+
+		// Reset all markers, infoboxes, and bumps
+		resetAll();
 	}
 
 	var incidentMarker = markerArray[selectedIncidentMarkerIndex];
 	animateToIncident(incidentMarker);
+}
+
+function resetAll() {
+	// Set all markers to non bumped
+	for (var i = 0; i < markerArray.length; i++) {
+		markerArray[i]._isBumped = false;
+	}
+	
+	// Reset all fully bumped country polygons
+	// 1) Remove layer with all countries
+	allCountriesLayer.clearLayers();
+	// 2) Re-parse geoJson and add original, non-bumped country polygons to the map, anew
+	addCountriesToMap(originalCollection);
+	
+	// NB If user manually selects an incident at the end of the timeline, and the animation goes to the next, 
+	// rolls over, and this resetAll() is triggered, the user might not have seen all incidents. 
 }
 
 function selectIncident(/* Marker */ incidentMarker) {
@@ -523,7 +555,7 @@ function findClosestLayer(/* String */ countryCode, /* L.LatLng */ pos) {
 
 function bumpCountryLayers(/* L.Layer */ fromCountryLayer, /* L.Layer */ toCountryLayer, /* L.LatLng */ incidentLatLng) {
 
-	// TODO Use only points in bounding box
+	// TODO Use only points in bounding box (as in v0.5, but seems to be not necessary)
 
 
 	var toPoints = toCountryLayer._latlngs;
