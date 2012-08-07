@@ -106,7 +106,7 @@ d3.tsv("data/incidents.tsv", function(data) {
 	// Create marker for each incident
 	data.forEach(function(incident, index) {
 
-		var popupText = createPopupText(incident);
+		//var popupText = createPopupText(incident);
 		
 		// Radius of cell
 		var signalFactor = incident.RSSI / -100;
@@ -151,7 +151,7 @@ d3.tsv("data/incidents.tsv", function(data) {
 		}).addTo(map)
 		.on("click", function() {
 			//console.log("Clicked on marker", this)
-			animateToIncident(this);
+			animateToIncident(this,true);
 		});
 
 		// Incident point (center of incident)
@@ -163,11 +163,11 @@ d3.tsv("data/incidents.tsv", function(data) {
 			weight:2,
 			opacity:0.8,
 		})
-		.addTo(map)
-		.bindPopup(popupText, {
-			//offset: new L.Point(0, 7),
-			autoPan: false
-		})
+		.addTo(map)		// 
+				// .bindPopup(popupText, {
+				// 	//offset: new L.Point(0, 7),
+				// 	autoPan: false
+				// })
 		
 		marker._incident = incident;
 		marker._isBumped = false;
@@ -186,15 +186,14 @@ function createPopupText(incident) {
 	dateOut += d.substring(9, 11)+":"+d.substring(11, 13)+":"+d.substring(13, 15);
 	
 	var popupText = "";
-	popupText += "TimeStamp: <span>" + dateOut + "</span><br/>";
-	popupText += "MCC: <span>" + incident.CurMCC_ID + "</span><br/>";
-	popupText += "Cell_ID: <span>" + incident.CurCell_ID + "</span><br/>";
-	popupText += "Cell_Owner: <span>" + incident.CurCell_Provider + "</span><br/>";
-	popupText += "RSSI: <span>" + incident.RSSI + "</span><br/>";
-	popupText += "Lat: <span>" + incident.Lat + "</span><br/>";
-	popupText += "Lng: <span>" + incident.Lng + "</span><br/>";
-	popupText += "Device: <span>" + incident.Device + "</span><br/>";
-	
+	popupText += "<div><span class='name'>TimeStamp: </span><span class='val'>" + dateOut + "</span></div>";
+	popupText += "<div><span class='name'>MCC: </span><span class='val'>" + incident.CurMCC_ID + "</span></div>";
+	popupText += "<div><span class='name'>Cell_ID: </span><span class='val'>" + incident.CurCell_ID + "</span></div>";
+	popupText += "<div><span class='name'>Cell_Owner: </span><span class='val'>" + incident.CurCell_Provider + "</span></div>";
+	popupText += "<div><span class='name'>RSSI: </span><span class='val'>" + incident.RSSI + "</span></div>";
+	popupText += "<div><span class='name'>Lat: </span><span class='val'>" + incident.Lat + "</span></div>";
+	popupText += "<div><span class='name'>Lng: </span><span class='val'>" + incident.Lng + "</span></div>";
+	popupText += "<div><span class='name'>Device: </span><span class='val'>" + incident.Device + "</span></div>";
 	return popupText;
 }
 
@@ -327,9 +326,13 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 	if (incidentMarker && settings.showInfoPopup) {
 		console.log("openpopup", incidentMarker)
 		//updatePopupOffset(incidentMarker);
-		incidentMarker._incidentCirle.openPopup();
+		//incidentMarker._incidentCirle.openPopup();
+		var incidentDiv = createPopupText(incidentMarker._incident);
+		d3.select('#incidentHistory').insert("div", ":first-child").html(incidentDiv);
 	}
 }
+
+
 
 function updatePopupOffset(/* Marker */ incidentMarker) {
 	incidentMarker._popup.options.offset.y = -incidentMarker._radius;
@@ -368,14 +371,20 @@ function animateToIncident(/* Marker */ incidentMarker) {
 
 	// Save index of marker for interaction selections (e.g. click on marker)
 	selectedIncidentMarkerIndex = incidentMarker._index;
+	
+	// if(arguments[1]){
+	// 	//start zoom direct
+	// 	incidentMarker.animateToIncident = true;
+	// 	map.setView(incidentMarker._incident.latlng, settings.IncidentZoomLevel);
+	// }
 
 	if (map.getCenter().equals(incidentMarker.getLatLng())) {
 		// centered on marker
 		selectIncident(incidentMarker);
 	} else {
 		//start animation
-		incidentMarker.animateToOveral = true;
-		map.setView(incidentMarker._incident.latlng, settings.overalZoomLevel);
+		incidentMarker.animateToIncident = true;
+		map.setView(incidentMarker._incident.latlng, settings.incidentZoomLevel);
 	}
 }
 
