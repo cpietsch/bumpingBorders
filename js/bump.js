@@ -113,7 +113,7 @@ d3.json("data/europe.geo.json", function(collection) {
 
 function loadIncidentData() {
 // Load incidents
-d3.tsv("data/incidents.tsv", function(data) {
+d3.tsv("data/dummy-incidents.tsv", function(data) {
 			
 	// Create marker for each incident
 	data.forEach(function(incident, index) {
@@ -128,7 +128,8 @@ d3.tsv("data/incidents.tsv", function(data) {
 		incident.latlng = new L.LatLng(incident.Lat, incident.Lng); // original
 		var closestToLayer = findClosestLayer(incident.CurMCC_CountryCode, incident.latlng);
 		var nearestPointData = _findNearestPointData(closestToLayer._latlngs, incident.latlng);
-
+		
+		console.log("Creating marker w/ nearest point to " + incident.CurMCC_CountryCode);
 		center = new L.LatLng(incident.Lat, incident.Lng); // center of marker
 		center.lat -= nearestPointData.direction[0];
 		center.lng -= nearestPointData.direction[1];

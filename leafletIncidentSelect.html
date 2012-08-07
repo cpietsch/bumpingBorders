@@ -36,7 +36,10 @@
 
 	<script>
 		
-	
+		// Some multiples in order to more often randomly select top providers 
+		var mobileProviders = ["Vodafone", "Vodafone", "Vodafone", "Vodafone", "Vodafone", "Telekom", "T-Mobile", "T-Mobile", "T-Mobile", "E-Plus", "O2", "O2", "O2", "O2", "Orange", "Orange", "Orange", "Orange", "Orange", "Swisscom", "Telia", "KPN", "TIM", "SFR", "Telia", "Mobistar", "A1", "3", "Tele2"];
+		
+		
 		var map = L.map('map',{
 			inertia:false,
 		//	fadeAnimation:true,
@@ -79,16 +82,18 @@
 					layer.on('click', function(e) {
 						//20120731T124419	xx	DE	xx	FR	xx	O2	xx	O2	-50	49.233333	7	"Till"	"iPhone"
 						
-						var from = prompt("From County", feature.properties.ISO_A2);
-						var to = prompt("To County", feature.properties.ISO_A2);
+						var from = prompt("From Country", feature.properties.ISO_A2);
+						var to = prompt("To Country", feature.properties.ISO_A2);
 
 						var incidentRow="";
 						incidentRow += new Date().getTime() + "\t";
-						incidentRow += "xx\t";
+						incidentRow += "n/a\t";
 						incidentRow += from+"\t";
-						incidentRow += "xx\t";
+						incidentRow += "n/a\t";
 						incidentRow += to+"\t";
-						incidentRow += "xx\tO2\txx\tO2\t7\t";
+						incidentRow += "n/a\t" + mobileProviders[Math.round(Math.random() * mobileProviders.length)] + "\tn/a\t";
+						incidentRow += mobileProviders[Math.round(Math.random() * mobileProviders.length)] + "\t"
+						incidentRow += Math.round(Math.random() * -98) + "\t";
 						incidentRow += e.latlng.lat + "\t";
 						incidentRow += e.latlng.lng + "\t";
 						incidentRow += '"Till"\t"iPhone"';
@@ -124,11 +129,13 @@
 			
 			var incidentRow="";
 			incidentRow += new Date().getTime() + "\t";
-			incidentRow += "xx\t";
+			incidentRow += "n/a\t";
 			incidentRow += from+"\t";
-			incidentRow += "xx\t";
+			incidentRow += "n/a\t";
 			incidentRow += to+"\t";
-			incidentRow += "xx\tO2\txx\tO2\t7\t";
+			incidentRow += "n/a\t" + mobileProviders[Math.round(Math.random() * mobileProviders.length)] + "\tn/a\t";
+			incidentRow += mobileProviders[Math.round(Math.random() * mobileProviders.length)] + "\t"
+			incidentRow += Math.round(Math.random() * -98) + "\t";
 			incidentRow += e.latlng.lat + "\t";
 			incidentRow += e.latlng.lng + "\t";
 			incidentRow += '"Till"\t"iPhone"';
