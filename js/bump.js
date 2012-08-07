@@ -324,6 +324,10 @@ function selectIncident(/* Marker */ incidentMarker) {
 
 			// Do this only once
 			incidentMarker._isBumped = true;
+			
+			// openPopup
+			openIncidentPopup(incidentMarker);
+			
 		}, 1000);
 	} else {
 		console.log("selectIncident > openIncidentPopup");
@@ -612,16 +616,6 @@ function transitionPoints(/* L.Layer */ countryLayer, /* Array<L.LatLng> */ poin
 
 			map.removeLayer(tempTargetPolyline);
 			map.removeLayer(tempCountryPolyline);
-			
-			console.log("after transition > openIncidentPopup");
-			// TODO Only open it once! (Two borders are transitioned!)
-			// open only one popup
-			markerArray[selectedIncidentMarkerIndex].openNow +=1;
-			
-			if(markerArray[selectedIncidentMarkerIndex].openNow==2){
-				openIncidentPopup(markerArray[selectedIncidentMarkerIndex]);
-				markerArray[selectedIncidentMarkerIndex].openNow=0;
-			}
 			
 		});
 }
