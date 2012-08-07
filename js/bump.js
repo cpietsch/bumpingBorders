@@ -194,20 +194,23 @@ d3.tsv("data/incidents.tsv", function(data) {
 }
 
 function createPopupText(incident) {
-	var d= incident.TimeStamp;
-	var dateOut= "";
-	dateOut += d.substring(6, 8)+"-"+d.substring(4, 6)+"-"+d.substring(0, 4)+" ";
-	dateOut += d.substring(9, 11)+":"+d.substring(11, 13)+":"+d.substring(13, 15);
+	var d = incident.TimeStamp;
+	var dateOut = "";
+	dateOut += d.substring(6, 8) + "-" + d.substring(4, 6) + "-" + d.substring(0, 4) + " ";
+	dateOut += d.substring(9, 11) + ":" + d.substring(11, 13) + ":" + d.substring(13, 15);
 	
 	var popupText = "";
+	popupText += "<div><span class='name'>Device: </span><span class='val'>" + incident.Device + "</span></div>";
+	popupText += "<div><span class='name'>From </span><span class='val'>" + incident.LastMCC_CountryCode + "</span><span class='name'> to </span><span class='val'>" + incident.CurMCC_CountryCode + "</span></div>";
+	popupText += "<div class='separator'></div>";
 	popupText += "<div><span class='name'>TimeStamp: </span><span class='val'>" + dateOut + "</span></div>";
 	popupText += "<div><span class='name'>MCC: </span><span class='val'>" + incident.CurMCC_ID + "</span></div>";
 	popupText += "<div><span class='name'>Cell_ID: </span><span class='val'>" + incident.CurCell_ID + "</span></div>";
 	popupText += "<div><span class='name'>Cell_Owner: </span><span class='val'>" + incident.CurCell_Provider + "</span></div>";
+	// TODO Use default value if RSSI value is -1. (Android API does not provide RSSI values.)
 	popupText += "<div><span class='name'>RSSI: </span><span class='val'>" + incident.RSSI + "</span></div>";
 	popupText += "<div><span class='name'>Lat: </span><span class='val'>" + incident.Lat + "</span></div>";
 	popupText += "<div><span class='name'>Lng: </span><span class='val'>" + incident.Lng + "</span></div>";
-	popupText += "<div><span class='name'>Device: </span><span class='val'>" + incident.Device + "</span></div>";
 	return popupText;
 }
 
@@ -228,7 +231,7 @@ map.on('moveend', function(e) {
 	var incidentMarker = markerArray[selectedIncidentMarkerIndex];
 	
 	if (incidentMarker && incidentMarker.animateToOveral) {
-		setTimeout(function(){
+		setTimeout(function() {
 			map.setView(incidentMarker._incident.latlng, settings.incidentZoomLevel);
 			incidentMarker.animateToIncident = true;
 		},800);
@@ -281,7 +284,7 @@ function updateMarkerSizes() {
 }
 
 function updateMarkerSize(/* Marker */ marker) {
-	// Could be used for border adaptation and popup offset
+	// TODO Could be used for border adaptation and popup offset
 	
 	/*
 	var dbFactor = marker._incident.RSSI / -100;
@@ -330,44 +333,44 @@ function selectIncident(/* Marker */ incidentMarker) {
 			
 		}, 1000);
 	} else {
-		console.log("selectIncident > openIncidentPopup");
+		//console.log("selectIncident > openIncidentPopup");
 		openIncidentPopup(incidentMarker);
 	}
 }
 
 function openIncidentPopup(/* Marker */ incidentMarker) {
 	if (incidentMarker && settings.showInfoPopup) {
-		console.log("openpopup", incidentMarker)
+		//console.log("openpopup", incidentMarker)
 		//incidentMarker._incidentCirle.openPopup();
-		var incidentDiv= $('#i'+incidentMarker._index);
-		var container=$('#incidentHistory');
+		
+		var incidentDiv = $('#i'+incidentMarker._index);
+		var container = $('#incidentHistory');
 		container.find('.active').removeClass('active');
 		
 		
-		if(incidentDiv.length>0){
+		if (incidentDiv.length > 0) {
 			incidentDiv.addClass('active')
-			var elementOffset=incidentDiv.offset();
-			var scrollTo= elementOffset.top-210;
-			container.scrollToPos(scrollTo,500);
-			//container[0].scrollTop=scrollTo;
+			var elementOffset = incidentDiv.offset();
+			var scrollTo = elementOffset.top - 210;
+			container.scrollToPos(scrollTo, 500);
 		} else {
-			container.scrollToPos(0,500);
+			container.scrollToPos(0, 500);
 			var incidentDiv = createPopupText(incidentMarker._incident);
 
 			var itemOuter = $('<div>')
-				.attr('id','i'+incidentMarker._index)
+				.attr('id', 'i' + incidentMarker._index)
 				.addClass('incidentOuter')
 				.addClass('active')
 				.prependTo(container)
 				.animate({
-					height:120
+					height: 120
 				}, {
-					duration:1000,
-					easing:"cubic-bezier(0.64,0,0.28,1)"
+					duration: 1000,
+					easing: "cubic-bezier(0.64, 0, 0.28, 1)"
 				})
-				.data('incidentIndex',incidentMarker._index)
-				.on("click",function(){
-					var index= $(this).data('incidentIndex');
+				.data('incidentIndex', incidentMarker._index)
+				.on("click", function() {
+					var index = $(this).data('incidentIndex');
 					animateToIncident(markerArray[index]);
 				})
 
@@ -377,20 +380,19 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 				.html(incidentDiv)
 				.appendTo(itemOuter)
 				.animate({
-					top:0
+					top: 0
 				}, {
-					duration:1000,
-					easing:"cubic-bezier(0.64,0,0.28,1)"
+					duration: 1000,
+					easing: "cubic-bezier(0.64, 0, 0.28, 1)"
 				})
 		}
 	
 
-		$('#incidentHistory>div').each(function(index, item){
-			if(index>30) $(item).remove();
+		$('#incidentHistory>div').each(function(index, item) {
+			if (index > 30) $(item).remove();
 		});
 	}
 }
-
 
 
 
@@ -454,12 +456,21 @@ function bumpCountries(/* String */ fromCountryCode, /* String */ toCountryCode,
 	// Bump only closest layer (not all)
 	var fromCountryClosestLayer = findClosestLayer(fromCountryCode, incidentLatLng);
 	var toCountryClosestLayer = findClosestLayer(toCountryCode, incidentLatLng);
-
-	bumpCountryLayers(fromCountryClosestLayer, toCountryClosestLayer, incidentLatLng);
+	
+	if (fromCountryClosestLayer != null && toCountryClosestLayer != null) {
+		bumpCountryLayers(fromCountryClosestLayer, toCountryClosestLayer, incidentLatLng);
+	}
+	else {
+		console.warn("Could not find layers for both countries: " + fromCountryCode + " to " + toCountryCode);
+	}
 }	
 
 function findClosestLayer(/* String */ countryCode, /* L.LatLng */ pos) {
 	var countryLayers = countryLayerMap[countryCode];
+	if (!(countryLayers !== undefined)) {
+		return null;
+	}
+	
 	//console.log("countryLayers: " + countryLayers);
 	var minDist = Infinity;
 	var nearestLayerId;

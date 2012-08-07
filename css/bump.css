@@ -67,7 +67,19 @@ html, body {
 	
 }
 #incidentHistory .incidentInner .name {
+	font-weight:normal;
+}
+
+#incidentHistory .incidentInner .val {
 	font-weight:bold;
+}
+
+#incidentHistory .separator {
+	height:1px;
+	background:#888;
+	border-bottom:1px solid #777;
+	margin-top:1px;
+	margin-bottom:3px;
 }
 
 
