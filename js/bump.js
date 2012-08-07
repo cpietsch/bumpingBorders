@@ -13,7 +13,7 @@ var settings = {
 	showDebug: false,
 	maxBumpPointsRadius: 15,
 	numBumpPoints: 6, // NB Only even numbers
-	animationInterval: 5000,
+	animationInterval: 50000,
 	animationWaitInterval: 10000,
 	autoAnimation: true,
 	showInfoPopup: true,
@@ -338,23 +338,59 @@ function selectIncident(/* Marker */ incidentMarker) {
 function openIncidentPopup(/* Marker */ incidentMarker) {
 	if (incidentMarker && settings.showInfoPopup) {
 		console.log("openpopup", incidentMarker)
-		//updatePopupOffset(incidentMarker);
 		//incidentMarker._incidentCirle.openPopup();
-		var incidentDiv = createPopupText(incidentMarker._incident);
-		//d3.select('#incidentHistory').insert("div", ":first-child").html(incidentDiv);
-		var item = $('<div>')
-			.html(incidentDiv)
-			.prependTo('#incidentHistory')
-			.css('top',-120)
-			.animate({
-				top:0
-			}, {
-				duration:1000,
-				easing:"cubic-bezier(0, 0.35, .5, 1.3)"
-			})
-		console.log()
+		var incidentDiv= $('#i'+incidentMarker._index);
+		var container=$('#incidentHistory');
+		container.find('.active').removeClass('active');
+		
+		
+		if(incidentDiv.length>0){
+			incidentDiv.addClass('active')
+			var elementOffset=incidentDiv.offset();
+			var scrollTo= elementOffset.top-200;
+			container.scrollToPos(scrollTo,500);
+			//container[0].scrollTop=scrollTo;
+		} else {
+			container.scrollToPos(0,500);
+			var incidentDiv = createPopupText(incidentMarker._incident);
+
+			var itemOuter = $('<div>')
+				.attr('id','i'+incidentMarker._index)
+				.addClass('incidentOuter')
+				.addClass('active')
+				.prependTo(container)
+				.animate({
+					height:120
+				}, {
+					duration:1000,
+					easing:"cubic-bezier(0.64,0,0.28,1)"
+				})
+				.data('incidentIndex',incidentMarker._index)
+				.on("click",function(){
+					var index= $(this).data('incidentIndex');
+					animateToIncident(markerArray[index]);
+				})
+
+
+			var itemInner = $('<div>')
+				.addClass('incidentInner')
+				.html(incidentDiv)
+				.appendTo(itemOuter)
+				.animate({
+					top:0
+				}, {
+					duration:1000,
+					easing:"cubic-bezier(0.64,0,0.28,1)"
+				})
+		}
+	
+
+		$('#incidentHistory>div').each(function(index, item){
+			if(index>30) $(item).remove();
+		});
 	}
 }
+
 
 
 

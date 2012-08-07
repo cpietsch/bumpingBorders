@@ -48,14 +48,25 @@ html, body {
 	overflow-y:scroll;
 }
 
-#incidentHistory > div {
+#incidentHistory .incidentOuter {
+	height:0px;
+}
+#incidentHistory .incidentInner {
 	padding:10px;
 	background:#444;
 	border:1px solid #777;
 	margin:10px 10px 0px 10px;
 	position:relative;
+	cursor:pointer;
+	top:-120px;
 }
-#incidentHistory > div .name {
+#incidentHistory .active .incidentInner {
+	padding:10px;
+	background:#666;
+	border:1px solid #888;
+	
+}
+#incidentHistory .incidentInner .name {
 	font-weight:bold;
 }
 
