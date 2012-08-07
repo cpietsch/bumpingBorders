@@ -15,7 +15,7 @@ var settings = {
 	numBumpPoints: 6, // NB Only even numbers
 	animationInterval: 8000,
 	animationWaitInterval: 12000,
-	autoAnimation: false,
+	autoAnimation: true,
 	showInfoPopup: true,
 	initialLatLng:[52.08119, 14.52667],
 	initialZoom:9,
@@ -58,8 +58,8 @@ L.tileLayer(tileServerString, {
 var countryLayerMap = new Object();
 
 var markerArray = [];
-var selectedIncidentMarkerIndex = 0;
-var lastIncidentMarkerIndex=0;
+var selectedIncidentMarkerIndex = -1;
+var lastIncidentMarkerIndex = 0;
 
 // UI ---------------------------------------------
 
@@ -113,7 +113,7 @@ d3.json("data/europe.geo.json", function(collection) {
 
 function loadIncidentData() {
 // Load incidents
-d3.tsv("data/dummy-incidents.tsv", function(data) {
+d3.tsv("data/incidents.tsv", function(data) {
 			
 	// Create marker for each incident
 	data.forEach(function(incident, index) {
@@ -129,7 +129,8 @@ d3.tsv("data/dummy-incidents.tsv", function(data) {
 		var closestToLayer = findClosestLayer(incident.CurMCC_CountryCode, incident.latlng);
 		var nearestPointData = _findNearestPointData(closestToLayer._latlngs, incident.latlng);
 		
-		console.log("Creating marker w/ nearest point to " + incident.CurMCC_CountryCode);
+		//console.log("Creating marker w/ nearest point to " + incident.CurMCC_CountryCode);
+		// FIXME Move cell tower circle into inverse direction sometimes; depending on actual country the incident is in
 		center = new L.LatLng(incident.Lat, incident.Lng); // center of marker
 		center.lat -= nearestPointData.direction[0];
 		center.lng -= nearestPointData.direction[1];
@@ -164,7 +165,8 @@ d3.tsv("data/dummy-incidents.tsv", function(data) {
 		}).addTo(map)
 		.on("click", function() {
 			//console.log("Clicked on marker", this)
-			animateToIncident(this,true);
+			lastIncidentMarkerIndex = selectedIncidentMarkerIndex;
+			animateToIncident(this, true);
 		});
 
 		// Incident point (center of incident)
@@ -310,6 +312,10 @@ function gotoNextMarker() {
 	//console.log("gotoNextMarker");
 	
 	lastIncidentMarkerIndex = selectedIncidentMarkerIndex;
+	if (lastIncidentMarkerIndex == -1) {
+		// Special case: First iteration
+		lastIncidentMarkerIndex = 0;
+	}
 
 	selectedIncidentMarkerIndex++;
 	if (selectedIncidentMarkerIndex >= markerArray.length) {
@@ -321,7 +327,7 @@ function gotoNextMarker() {
 }
 
 function selectIncident(/* Marker */ incidentMarker) {
-	
+
 	// reset last marker style
 	var lastMarker = markerArray[lastIncidentMarkerIndex];
 	lastMarker._bigCirle.setStyle({
@@ -399,6 +405,7 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 				.data('incidentIndex', incidentMarker._index)
 				.on("click", function() {
 					var index = $(this).data('incidentIndex');
+					lastIncidentMarkerIndex = selectedIncidentMarkerIndex;
 					animateToIncident(markerArray[index]);
 				})
 
@@ -458,10 +465,12 @@ function animateToIncident(/* Marker */ incidentMarker) {
 			markerArray[selectedIncidentMarkerIndex]._incidentCirle.closePopup();
 		}
 	}
-	lastIncidentMarkerIndex = selectedIncidentMarkerIndex;
+	
+	//lastIncidentMarkerIndex = selectedIncidentMarkerIndex;
+	
 	// Save index of marker for interaction selections (e.g. click on marker)
 	selectedIncidentMarkerIndex = incidentMarker._index;
-	
+
 	// if(arguments[1]){
 	// 	//start zoom direct
 	// 	incidentMarker.animateToIncident = true;
@@ -679,7 +688,7 @@ function transitionPoints(/* L.Layer */ countryLayer, /* Array<L.LatLng> */ poin
 	var targetSVGData = tempTargetPolyline._path.getAttribute('d');
 
 	// Transition from temp country polyline to bumped polyline
-	console.log("starting transition...");
+	//console.log("starting transition...");
 	d3.select(tempCountryPolyline._path)
 		.transition()
 		.duration(3000)
