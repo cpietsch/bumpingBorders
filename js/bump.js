@@ -6,6 +6,11 @@
 // })
 	
 var settings = {
+	incidentsFileName: "data/dummy-incidents.tsv",
+	countriesGeoJsonFilename: "data/europe.geo.json",
+	tileServerString: 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', // Stamen Toner
+	//tileServerString: 'http://localhost:20008/tile/border-bumps/{z}/{x}/{y}.png?updated=' + new Date().getTime(), // Local TileMill 
+	
 	incidentZoomLevel: 9,
 	incidentRadiusMeter: 20000,
 	borderOpacity: 0.8,
@@ -20,6 +25,7 @@ var settings = {
 	initialLatLng:[52.08119, 14.52667],
 	initialZoom:9,
 	overalZoomLevel:7
+	
 };
 
 // -24.6973,32.7688,51.0645,71.2726 (original)
@@ -45,9 +51,7 @@ var map = L.map('map',{
 
 
 // Map style
-var tileServerString = 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png'; // Stamen Toner
-//var tileServerString = 'http://localhost:20008/tile/border-bumps/{z}/{x}/{y}.png?updated=' + new Date().getTime() // Local TileMill 
-L.tileLayer(tileServerString, {
+L.tileLayer(settings.tileServerString, {
 	reuseTiles:true,
 	//updateWhenIdle:true,
 	unloadInvisibleTiles:false
@@ -80,7 +84,7 @@ var allCountriesLayer;
 
 
 // Load country polygons
-d3.json("data/europe.geo.json", function(collection) {
+d3.json(settings.countriesGeoJsonFilename, function(collection) {
 	originalCollection = collection;
 
 	addCountriesToMap(collection);
@@ -126,7 +130,7 @@ function addCountriesToMap(collection) {
 
 function loadIncidentData() {
 // Load incidents
-d3.tsv("data/incidents.tsv", function(data) {
+d3.tsv(settings.incidentsFileName, function(data) {
 			
 	// Create marker for each incident
 	data.forEach(function(incident, index) {
