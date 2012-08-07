@@ -22,7 +22,7 @@ html, body {
 	right:0px;
 	
 	
-	background:#000;
+	background:#1B1B1B;
 	
 	font-family:Helvetica;
 	font-size:10px;
@@ -53,17 +53,19 @@ html, body {
 }
 #incidentHistory .incidentInner {
 	padding:10px;
-	background:#444;
-	border:1px solid #777;
+	background: #222;
+	border: 1px solid #313131;
 	margin:10px 10px 0px 10px;
 	position:relative;
 	cursor:pointer;
 	top:-120px;
+	color: #505050;
 }
 #incidentHistory .active .incidentInner {
 	padding:10px;
-	background:#666;
-	border:1px solid #888;
+	background: #3C3C3C;
+	border: 1px solid #474747;
+	color: #FFF;
 	
 }
 #incidentHistory .incidentInner .name {
@@ -76,10 +78,17 @@ html, body {
 
 #incidentHistory .separator {
 	height:1px;
-	background:#888;
-	border-bottom:1px solid #777;
+	background: black;
+	border-bottom: 1px solid #3C3C3C;
 	margin-top:1px;
 	margin-bottom:3px;
+}
+
+#incidentHistory .active .separator {
+
+	background: #333;
+	border-bottom: 1px solid #525252;
+
 }
 
 

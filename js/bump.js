@@ -59,6 +59,7 @@ var countryLayerMap = new Object();
 
 var markerArray = [];
 var selectedIncidentMarkerIndex = 0;
+var lastIncidentMarkerIndex=0;
 
 // UI ---------------------------------------------
 
@@ -133,17 +134,17 @@ d3.tsv("data/incidents.tsv", function(data) {
 		center.lng -= nearestPointData.direction[1];
 		
 		// Visual radial expansion style
-		L.circle(center, radius * 0.8, {
+		var bigCircle = L.circle(center, radius * 0.8, {
 			fillOpacity:0.3,
-			fillColor:'red',
+			fillColor:'#FF4757',
 			stroke:false,
 			color:'white',
 			weight:4,
 			opacity:0.8,
 		}).addTo(map);
-		L.circle(center, radius * 0.6, {
+		var smallCircle = L.circle(center, radius * 0.6, {
 			fillOpacity:0.3,
-			fillColor:'red',
+			fillColor:'#FF4757',
 			stroke:false,
 			color:'white',
 			weight:1,
@@ -154,7 +155,7 @@ d3.tsv("data/incidents.tsv", function(data) {
 		var marker = L.circle(center, radius, {
 		    color: 'white',
 			opacity:1,
-		    fillColor: 'red',
+		    fillColor: '#FF4757',
 		    fillOpacity: 0.2,
 			stroke:false,
 			weight:5,
@@ -185,6 +186,8 @@ d3.tsv("data/incidents.tsv", function(data) {
 		marker._index = index;
 		marker._incidentCirle = incidentCirle;
 		marker.openNow=0;
+		marker._bigCirle=bigCircle;
+		marker._smallCirle=smallCircle;
 		markerArray.push(marker);
 		
 	})
@@ -304,6 +307,8 @@ function updateMarkerSize(/* Marker */ marker) {
 
 function gotoNextMarker() {
 	//console.log("gotoNextMarker");
+	
+	lastIncidentMarkerIndex = selectedIncidentMarkerIndex;
 
 	selectedIncidentMarkerIndex++;
 	if (selectedIncidentMarkerIndex >= markerArray.length) {
@@ -315,6 +320,28 @@ function gotoNextMarker() {
 }
 
 function selectIncident(/* Marker */ incidentMarker) {
+	
+	// reset last marker style
+	var lastMarker = markerArray[lastIncidentMarkerIndex];
+	lastMarker._bigCirle.setStyle({
+		fillColor:'#FF4757'
+	});
+	lastMarker._smallCirle.setStyle({
+		fillColor:'#FF4757'
+	});
+	lastMarker.setStyle({
+		fillColor:'#FF4757'
+	});
+	// set active marker style
+	incidentMarker._bigCirle.setStyle({
+		fillColor:'#FF0015'
+	});
+	incidentMarker._smallCirle.setStyle({
+		fillColor:'#FF0015'
+	})
+	incidentMarker.setStyle({
+		fillColor:'#FF0015'
+	})
 
 	if (!incidentMarker._isBumped) {
 		// Bump the two countries of the incident
@@ -363,7 +390,7 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 				.addClass('active')
 				.prependTo(container)
 				.animate({
-					height: 120
+					height: 140
 				}, {
 					duration: 1000,
 					easing: "cubic-bezier(0.64, 0, 0.28, 1)"
@@ -430,7 +457,7 @@ function animateToIncident(/* Marker */ incidentMarker) {
 			markerArray[selectedIncidentMarkerIndex]._incidentCirle.closePopup();
 		}
 	}
-
+	lastIncidentMarkerIndex = selectedIncidentMarkerIndex;
 	// Save index of marker for interaction selections (e.g. click on marker)
 	selectedIncidentMarkerIndex = incidentMarker._index;
 	
