@@ -21,7 +21,7 @@
 	</style>
 </head>
 <body>
-	<div id="map" style="width: 800px; height: 400px"></div>
+	<div id="map" style="width: 1200px; height: 600px"></div>
 	<button id="save" style="">save jsonRead</button>
 	
 	<script>
@@ -52,7 +52,7 @@
 		var header="TimeStamp	LastMCC_ID	LastMCC_CountryCode	CurMCC_ID	CurMCC_CountryCode	LastCell_ID	LastCell_Provider	CurCell_ID	CurCell_Provider	RSSI	Lat	Lng	User	Device\n";
 		tsvWrite.push(header);
 
-		d3.json("data/test.geo.json", function(jsonRead) {
+		d3.json("data/europe.geo.json", function(jsonRead) {
 			var i =0;
 			console.log(jsonRead);
 			
