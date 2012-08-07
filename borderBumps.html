@@ -16,25 +16,43 @@
 	<script type="text/javascript" src="lib/d3.v2.js"></script>
 	<script type="text/javascript" src="lib/d3.tsv.js"></script>
 
+	<script type="text/javascript" src="js/mercator.js"></script>
+	
 	<style>
-		
+		div#miniMap { background-image:url(img/overviewMap.png); width: 200px; height: 181px; }
+		div#overviewRect { position:relative; top:0px; left:0px; border: 1px solid red; width:20px; height: 20px; }
 	</style>
 </head>
 
 <body>
 	<div id="map" ></div>
 	<div id="sidebar">
-		<div id="miniMap"></div>
+		<div id="miniMap"><div id="overviewRect"></div></div>
 		<div id="incidentHistory">
 			
 		</div>
 	</div>
 
-	<div id="prevButton">prev</div>
-	<div id="nextButton">next</div>
-	
-</body>
-
 <script type="text/javascript" src="js/bump.js"></script>
+<script type="text/javascript">
+
+	// function MercatorMap(mapScreenWidth, mapScreenHeight, topLatitude, bottomLatitude, leftLongitude, rightLongitude) {
+	var mercatorMap = new MercatorMap(200, 181, mapNorthEast.lat, mapSouthWest.lat, mapSouthWest.lng, mapNorthEast.lng);
+	
+	map.on('move', function(e) {
+		var bounds = map.getBounds();
+		var top = mercatorMap.getScreenY(bounds.getNorthEast().lat);
+		var right = mercatorMap.getScreenX(bounds.getNorthEast().lng);
+		var bottom = mercatorMap.getScreenY(bounds.getSouthWest().lat);
+		var left = mercatorMap.getScreenX(bounds.getSouthWest().lng);
+		var width = right - left;
+		var height = bottom - top;
+		d3.select('#overviewRect').style('top', top + 'px');
+		d3.select('#overviewRect').style('left', left + 'px');
+		d3.select('#overviewRect').style('width', width + 'px');
+		d3.select('#overviewRect').style('height', height + 'px');
+	});
+	
+</script>
 
 </html>

@@ -22,6 +22,10 @@ var settings = {
 	overalZoomLevel:7
 };
 
+var mapSouthWest = new L.LatLng(32.7688, -24.6973),
+    mapNorthEast = new L.LatLng(71.2726, 51.0645),
+    mapBounds = new L.LatLngBounds(mapSouthWest, mapNorthEast);
+
 var map = L.map('map',{
 	inertia:false,
 	minZoom:4,
@@ -30,8 +34,10 @@ var map = L.map('map',{
 	fadeAnimation:false,
 	markerZoomAnimation:false,
 	zoomAnimation:true,
-	boxZoom:false
+	boxZoom:false,
+	maxBounds: mapBounds
 }).setView(settings.initialLatLng, settings.initialZoom);
+
 
 // Map style
 var tileServerString = 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png'; // Stamen Toner
