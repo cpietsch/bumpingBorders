@@ -347,7 +347,7 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 		if(incidentDiv.length>0){
 			incidentDiv.addClass('active')
 			var elementOffset=incidentDiv.offset();
-			var scrollTo= elementOffset.top-200;
+			var scrollTo= elementOffset.top-210;
 			container.scrollToPos(scrollTo,500);
 			//container[0].scrollTop=scrollTo;
 		} else {
