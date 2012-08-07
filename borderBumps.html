@@ -21,7 +21,7 @@
 	<script type="text/javascript" src="js/mercator.js"></script>
 	
 	<style>
-		div#miniMap { background-image:url(img/overviewMap.png); width: 200px; height: 181px; }
+		div#miniMap { background-image:url(img/overviewMap-215x180.png); width: 215px; height: 180px; left: 5px;}
 		div#overviewRect { position:relative; top:0px; left:0px; border: 1px solid red; width:20px; height: 20px; }
 	</style>
 </head>
@@ -39,7 +39,7 @@
 <script type="text/javascript">
 
 	// function MercatorMap(mapScreenWidth, mapScreenHeight, topLatitude, bottomLatitude, leftLongitude, rightLongitude) {
-	var mercatorMap = new MercatorMap(200, 181, mapNorthEast.lat, mapSouthWest.lat, mapSouthWest.lng, mapNorthEast.lng);
+	var mercatorMap = new MercatorMap(215, 180, detailMapNorthEast.lat, detailMapSouthWest.lat, detailMapSouthWest.lng, detailMapNorthEast.lng);
 	
 	map.on('move', function(e) {
 		var bounds = map.getBounds();

@@ -13,8 +13,8 @@ var settings = {
 	showDebug: false,
 	maxBumpPointsRadius: 15,
 	numBumpPoints: 6, // NB Only even numbers
-	animationInterval: 50000,
-	animationWaitInterval: 10000,
+	animationInterval: 8000,
+	animationWaitInterval: 12000,
 	autoAnimation: true,
 	showInfoPopup: true,
 	initialLatLng:[52.08119, 14.52667],
@@ -22,10 +22,14 @@ var settings = {
 	overalZoomLevel:7
 };
 
-// -24.6973,32.7688,51.0645,71.2726
+// -24.6973,32.7688,51.0645,71.2726 (original)
 var mapSouthWest = new L.LatLng(32.7688, -24.6973),
     mapNorthEast = new L.LatLng(71.2726, 51.0645),
     mapBounds = new L.LatLngBounds(mapSouthWest, mapNorthEast);
+
+// -26.6973,32.7688,55.0645,71.2726 (detailMap original)
+var detailMapSouthWest = new L.LatLng(32.7688,-24.6973),
+	detailMapNorthEast = new L.LatLng(71.2726, 55.0645);
 
 var map = L.map('map',{
 	inertia:false,
