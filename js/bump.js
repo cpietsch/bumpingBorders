@@ -179,9 +179,12 @@ d3.tsv("data/incidents.tsv", function(data) {
 		marker._isBumped = false;
 		marker._index = index;
 		marker._incidentCirle = incidentCirle;
+		marker.openNow=0;
 		markerArray.push(marker);
 		
 	})
+	
+	openIncidentPopup(markerArray[0])
 });
 }
 
@@ -334,7 +337,15 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 		//updatePopupOffset(incidentMarker);
 		//incidentMarker._incidentCirle.openPopup();
 		var incidentDiv = createPopupText(incidentMarker._incident);
-		d3.select('#incidentHistory').insert("div", ":first-child").html(incidentDiv);
+		//d3.select('#incidentHistory').insert("div", ":first-child").html(incidentDiv);
+		var item = $('<div>')
+			.html(incidentDiv)
+			.prependTo('#incidentHistory')
+			.css('height',0)
+			.animate({
+				'height':120
+			})
+		console.log()
 	}
 }
 
@@ -448,7 +459,7 @@ function bumpCountryLayers(/* L.Layer */ fromCountryLayer, /* L.Layer */ toCount
 	if (settings.showDebug) {
 		_showBumpDebug(incidentLatLng, toPointsToBump, fromPointsToBump, nearestToPointData);
 	}
-
+	
 	// Calculate bump vectors and transform original points
 	var bumpVectors = getBumpVectors(toPointsToBump, nearestToPointData, incidentLatLng);
 	//transformPoints(toPointsToBump, bumpVectors);
@@ -598,10 +609,17 @@ function transitionPoints(/* L.Layer */ countryLayer, /* Array<L.LatLng> */ poin
 
 			map.removeLayer(tempTargetPolyline);
 			map.removeLayer(tempCountryPolyline);
-		
+			
 			console.log("after transition > openIncidentPopup");
 			// TODO Only open it once! (Two borders are transitioned!)
-			openIncidentPopup(markerArray[selectedIncidentMarkerIndex]);
+			// open only one popup
+			markerArray[selectedIncidentMarkerIndex].openNow +=1;
+			
+			if(markerArray[selectedIncidentMarkerIndex].openNow==2){
+				openIncidentPopup(markerArray[selectedIncidentMarkerIndex]);
+				markerArray[selectedIncidentMarkerIndex].openNow=0;
+			}
+			
 		});
 }
 
