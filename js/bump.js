@@ -22,6 +22,7 @@ var settings = {
 	overalZoomLevel:7
 };
 
+// -24.6973,32.7688,51.0645,71.2726
 var mapSouthWest = new L.LatLng(32.7688, -24.6973),
     mapNorthEast = new L.LatLng(71.2726, 51.0645),
     mapBounds = new L.LatLngBounds(mapSouthWest, mapNorthEast);
