@@ -15,7 +15,7 @@ var settings = {
 	numBumpPoints: 6, // NB Only even numbers
 	animationInterval: 5000,
 	animationWaitInterval: 10000,
-	autoAnimation: false,
+	autoAnimation: true,
 	showInfoPopup: true,
 	initialLatLng:[52.08119, 14.52667],
 	initialZoom:9,
