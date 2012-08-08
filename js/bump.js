@@ -377,6 +377,11 @@ function resetAll() {
 	// 2) Re-parse geoJson and add original, non-bumped country polygons to the map, anew
 	addCountriesToMap(originalCollection);
 	
+	// Remove all tickets
+	$('#incidentHistory>div').each(function(index, item) {
+		$(item).remove();
+	});
+	
 	// NB If user manually selects an incident at the end of the timeline, and the animation goes to the next, 
 	// rolls over, and this resetAll() is triggered, the user might not have seen all incidents. 
 }
