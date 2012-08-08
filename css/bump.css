@@ -29,14 +29,16 @@ html, body {
 	color:#FFF;
 }
 
-#miniMap {
-	height: 190px;
-	background:#EEE;
+div#miniMap {
+	border: 1px solid #313131;
 	position: relative;
 	top:0px;
 	right:0px;
 	margin:5px;
+	background-image:url("../img/overviewMap-215x180.png"); width: 215px; height: 180px; left: 5px;
 }
+div#overviewRect { position:relative; top:0px; left:0px; border: 1px solid #ff6360; width:20px; height: 20px; }
+
 #incidentHistory {
 
 	width:250px;
