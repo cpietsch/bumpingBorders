@@ -6,7 +6,7 @@
 // })
 	
 var settings = {
-	incidentsFileName: "data/dummy-incidents.tsv",
+	incidentsFileName: "data/test-incidents.tsv",
 	countriesGeoJsonFilename: "data/europe.geo.json",
 	// tileServerString: 'http://localhost:8888/map/bb-eu/{z}/{x}/{y}.png', // Caravan
 	tileServerString: 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', // Stamen Toner
@@ -14,6 +14,7 @@ var settings = {
 	
 	incidentZoomLevel: 9,
 	incidentRadiusMeter: 20000,
+	maxDistanceToBorder: 0.5,
 	borderOpacity: 0.8,
 	borderColor:'#000000',
 	showDebug: false,
@@ -146,12 +147,22 @@ d3.tsv(settings.incidentsFileName, function(data) {
 		incident.latlng = new L.LatLng(incident.Lat, incident.Lng); // original
 		var closestToLayer = findClosestLayer(incident.CurMCC_CountryCode, incident.latlng);
 		var nearestPointData = _findNearestPointData(closestToLayer._latlngs, incident.latlng);
-		
-		//console.log("Creating marker w/ nearest point to " + incident.CurMCC_CountryCode);
-		// FIXME Move cell tower circle into inverse direction sometimes; depending on actual country the incident is in
+
 		center = new L.LatLng(incident.Lat, incident.Lng); // center of marker
-		center.lat -= nearestPointData.direction[0];
-		center.lng -= nearestPointData.direction[1];
+		if (nearestPointData.dist < settings.maxDistanceToBorder) {
+			// Display cell tower in the other direction between incident and border.
+			
+			//console.log("Creating marker w/ nearest point to " + incident.CurMCC_CountryCode);
+			// FIXME Move cell tower circle into inverse direction sometimes; depending on actual country the incident is in
+			center.lat -= nearestPointData.direction[0];
+			center.lng -= nearestPointData.direction[1];
+			
+			tooFarToBump = false;
+		}
+		else {
+			// Display cell tower and incident at same location
+			tooFarToBump = true; // airport or others
+		}
 		
 		// Visual radial expansion style
 		var bigCircle = L.circle(center, radius * 0.8, {
@@ -206,10 +217,11 @@ d3.tsv(settings.incidentsFileName, function(data) {
 		marker._incident = incident;
 		marker._isBumped = false;
 		marker._index = index;
+		marker.openNow = 0;
 		marker._incidentCirle = incidentCirle;
-		marker.openNow=0;
-		marker._bigCircle=bigCircle;
-		marker._smallCircle=smallCircle;
+		marker._bigCircle = bigCircle;
+		marker._smallCircle = smallCircle;
+		marker._isTooFarToBump = tooFarToBump;
 		markerArray.push(marker);
 		
 	})
@@ -418,12 +430,15 @@ function selectIncident(/* Marker */ incidentMarker) {
 
 	if (!incidentMarker._isBumped) {
 		// Bump the two countries of the incident
-		setTimeout(function(){
-			bumpCountries(
-				incidentMarker._incident.LastMCC_CountryCode,
-				incidentMarker._incident.CurMCC_CountryCode,
-				incidentMarker._incident.latlng
-			);
+		setTimeout(function() {
+			
+			if (!incidentMarker._isTooFarToBump) {
+				bumpCountries(
+					incidentMarker._incident.LastMCC_CountryCode,
+					incidentMarker._incident.CurMCC_CountryCode,
+					incidentMarker._incident.latlng
+				);
+			}
 
 			// Do this only once
 			incidentMarker._isBumped = true;
