@@ -8,6 +8,7 @@
 var settings = {
 	incidentsFileName: "data/dummy-incidents.tsv",
 	countriesGeoJsonFilename: "data/europe.geo.json",
+	// tileServerString: 'http://localhost:8888/map/bb-eu/{z}/{x}/{y}.png', // Caravan
 	tileServerString: 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', // Stamen Toner
 	//tileServerString: 'http://localhost:20008/tile/border-bumps/{z}/{x}/{y}.png?updated=' + new Date().getTime(), // Local TileMill 
 	
@@ -25,7 +26,6 @@ var settings = {
 	initialLatLng:[52.08119, 14.52667],
 	initialZoom:9,
 	overalZoomLevel:7
-	
 };
 
 // -24.6973,32.7688,51.0645,71.2726 (original)
@@ -183,6 +183,7 @@ d3.tsv(settings.incidentsFileName, function(data) {
 		}).addTo(map)
 		.on("click", function() {
 			//console.log("Clicked on marker", this)
+			delayMarkerAnimationOnInteraction();
 			lastIncidentMarkerIndex = selectedIncidentMarkerIndex;
 			animateToIncident(this, true);
 		});
@@ -207,8 +208,8 @@ d3.tsv(settings.incidentsFileName, function(data) {
 		marker._index = index;
 		marker._incidentCirle = incidentCirle;
 		marker.openNow=0;
-		marker._bigCirle=bigCircle;
-		marker._smallCirle=smallCircle;
+		marker._bigCircle=bigCircle;
+		marker._smallCircle=smallCircle;
 		markerArray.push(marker);
 		
 	})
@@ -284,12 +285,7 @@ map.on('moveend', function(e) {
 });
 	
 map.on("mousemove", function(e) {
-	// Stops animation on user interaction
-	clearInterval(markerAnimationTimer);
-	clearTimeout(markerAnimationInteractionTimer);
-
-	// And restarts after a while of non-interaction
-	markerAnimationInteractionTimer = window.setTimeout(restartMarkerAnimation, settings.animationWaitInterval);
+	delayMarkerAnimationOnInteraction();
 })
 
 // TEST
@@ -308,6 +304,14 @@ d3.select('#nextButton').on('click', function(e) {
 
 // --------------------------------------------------------
 
+function delayMarkerAnimationOnInteraction() {
+	// Stops animation on user interaction
+	clearInterval(markerAnimationTimer);
+	clearTimeout(markerAnimationInteractionTimer);
+
+	// And restarts after a while of non-interaction
+	markerAnimationInteractionTimer = window.setTimeout(restartMarkerAnimation, settings.animationWaitInterval);
+}
 
 function restartMarkerAnimation() {
 	if (settings.autoAnimation) {
@@ -381,24 +385,30 @@ function selectIncident(/* Marker */ incidentMarker) {
 
 	// reset last marker style
 	var lastMarker = markerArray[lastIncidentMarkerIndex];
-	lastMarker._bigCirle.setStyle({
-		fillColor:'#FF4757'
+	lastMarker._bigCircle.setStyle({
+		fillColor:'#FF4757',
+		fillOpacity: 0.3
 	});
-	lastMarker._smallCirle.setStyle({
-		fillColor:'#FF4757'
+	lastMarker._smallCircle.setStyle({
+		fillColor:'#FF4757',
+		fillOpacity: 0.3
 	});
 	lastMarker.setStyle({
-		fillColor:'#FF4757'
+		fillColor:'#FF4757',
+		fillOpacity: 0.2
 	});
 	// set active marker style
-	incidentMarker._bigCirle.setStyle({
-		fillColor:'#FF0015'
+	incidentMarker._bigCircle.setStyle({
+		fillColor:'#FF0015',
+		fillOpacity: 0.3
 	});
-	incidentMarker._smallCirle.setStyle({
-		fillColor:'#FF0015'
+	incidentMarker._smallCircle.setStyle({
+		fillColor:'#FF0015',
+		fillOpacity: 0.3
 	})
 	incidentMarker.setStyle({
-		fillColor:'#FF0015'
+		fillColor:'#FF0015', // FF0015
+		fillOpacity: 0.3
 	})
 
 	if (!incidentMarker._isBumped) {
@@ -456,6 +466,7 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 				.data('incidentIndex', incidentMarker._index)
 				.on("click", function() {
 					var index = $(this).data('incidentIndex');
+					delayMarkerAnimationOnInteraction();
 					lastIncidentMarkerIndex = selectedIncidentMarkerIndex;
 					animateToIncident(markerArray[index]);
 				})
