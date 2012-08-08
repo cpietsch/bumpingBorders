@@ -237,17 +237,17 @@ function createPopupText(incident) {
 	dateOut += d.substring(9, 11) + ":" + d.substring(11, 13) + ":" + d.substring(13, 15);
 	
 	var popupText = "";
-	popupText += "<div><span class='name'>Device: </span><span class='val'>" + incident.Device + "</span></div>";
-	popupText += "<div><span class='name'>From </span><span class='val'>" + incident.LastMCC_CountryCode + "</span><span class='name'> to </span><span class='val'>" + incident.CurMCC_CountryCode + "</span></div>";
+	popupText += "<div><span class='name'>Device</span><span class='val'>" + incident.Device + "</span></div>";
+	popupText += "<div><span class='name'>Direction </span><span class='val'>" + incident.LastMCC_CountryCode + " » " + incident.CurMCC_CountryCode + "</span></div>";
 	popupText += "<div class='separator'></div>";
-	popupText += "<div><span class='name'>TimeStamp: </span><span class='val'>" + dateOut + "</span></div>";
-	popupText += "<div><span class='name'>MCC: </span><span class='val'>" + getValidatdValue(incident.CurMCC_ID) + "</span></div>";
-	popupText += "<div><span class='name'>Cell_ID: </span><span class='val'>" + getValidatdValue(incident.CurCell_ID) + "</span></div>";
-	popupText += "<div><span class='name'>Cell_Owner: </span><span class='val'>" + getValidatdValue(incident.CurCell_Provider) + "</span></div>";
+	popupText += "<div><span class='name'>TimeStamp</span><span class='val'>" + dateOut + "</span></div>";
+	popupText += "<div><span class='name'>MCC</span><span class='val'>" + getValidatdValue(incident.CurMCC_ID) + "</span></div>";
+	popupText += "<div><span class='name'>Cell_ID</span><span class='val'>" + getValidatdValue(incident.CurCell_ID) + "</span></div>";
+	popupText += "<div><span class='name'>Cell_Owner</span><span class='val'>" + getValidatdValue(incident.CurCell_Provider) + "</span></div>";
 	// TODO Use default value if RSSI value is -1. (Android API does not provide RSSI values.)
-	popupText += "<div><span class='name'>RSSI: </span><span class='val'>" + incident.RSSI + "</span></div>";
-	popupText += "<div><span class='name'>Lat: </span><span class='val'>" + incident.Lat + "</span></div>";
-	popupText += "<div><span class='name'>Lng: </span><span class='val'>" + incident.Lng + "</span></div>";
+	popupText += "<div><span class='name'>RSSI</span><span class='val'>" + incident.RSSI + "</span></div>";
+	popupText += "<div><span class='name'>Lat</span><span class='val'>" + incident.Lat + "</span></div>";
+	popupText += "<div><span class='name'>Lng</span><span class='val'>" + incident.Lng + "</span></div>";
 	return popupText;
 }
 
@@ -478,7 +478,7 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 				.addClass('active')
 				.prependTo(container)
 				.animate({
-					height: 140
+					height: 150
 				}, {
 					duration: 1000,
 					easing: "cubic-bezier(0.64, 0, 0.28, 1)"

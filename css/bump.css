@@ -24,8 +24,9 @@ html, body {
 	
 	background:#1B1B1B;
 	
-	font-family:Helvetica;
-	font-size:10px;
+	font-family:'Ubuntu Mono', sans-serif;
+	font-size:11px;
+	line-height:1.2em;
 	color:#FFF;
 }
 
@@ -60,30 +61,33 @@ div#overviewRect { position:relative; top:0px; left:0px; border: 1px solid #ff63
 	margin:10px 10px 0px 10px;
 	position:relative;
 	cursor:pointer;
-	top:-140px;
+	top:-150px;
 	color: #505050;
+	clear:both;
 }
 #incidentHistory .active .incidentInner {
 	padding:10px;
 	background: #3C3C3C;
 	border: 1px solid #474747;
-	color: #FFF;
+	color: #F0F0F0;
 	
 }
 #incidentHistory .incidentInner .name {
-	font-weight:normal;
+	font-weight:700;
+	width: 73px;
+	float:left;
 }
 
 #incidentHistory .incidentInner .val {
-	font-weight:bold;
+	font-weight:normal;
 }
 
 #incidentHistory .separator {
 	height:1px;
 	background: black;
 	border-bottom: 1px solid #3C3C3C;
-	margin-top:1px;
-	margin-bottom:3px;
+	margin-top:5px;
+	margin-bottom:5px;
 }
 
 #incidentHistory .active .separator {
