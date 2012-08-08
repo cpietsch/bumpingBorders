@@ -39,6 +39,10 @@
 		// Some multiples in order to more often randomly select top providers 
 		var mobileProviders = ["Vodafone", "Vodafone", "Vodafone", "Vodafone", "Vodafone", "Telekom", "T-Mobile", "T-Mobile", "T-Mobile", "E-Plus", "O2", "O2", "O2", "O2", "Orange", "Orange", "Orange", "Orange", "Orange", "Swisscom", "Telia", "KPN", "TIM", "SFR", "Telia", "Mobistar", "A1", "3", "Tele2"];
 		
+		var mobileDevices = ["One S", "Galaxy Nexus", "Droid Razr", "Galaxy S II", "Galaxy S II", "Galaxy S II", "Galaxy S", "Galaxy S III", "Evo", "Desire HD", "Rezound"];
+
+		var userNames = ["Jim", "Anna", "Julian", "Chris", "Ben", "Sarah", "Alex", "Martin", "Sabrina", "Brendan", "Steve", "Hans", "Till", "Danja", "Emma"];
+		
 		
 		var map = L.map('map',{
 			inertia:false,
@@ -82,23 +86,8 @@
 					layer.on('click', function(e) {
 						//20120731T124419	xx	DE	xx	FR	xx	O2	xx	O2	-50	49.233333	7	"Till"	"iPhone"
 						
-						var from = prompt("From Country", feature.properties.ISO_A2);
-						var to = prompt("To Country", feature.properties.ISO_A2);
-
-						var incidentRow="";
-						incidentRow += new Date().getTime() + "\t";
-						incidentRow += "n/a\t";
-						incidentRow += from+"\t";
-						incidentRow += "n/a\t";
-						incidentRow += to+"\t";
-						incidentRow += "n/a\t" + mobileProviders[Math.round(Math.random() * mobileProviders.length)] + "\tn/a\t";
-						incidentRow += mobileProviders[Math.round(Math.random() * mobileProviders.length)] + "\t"
-						incidentRow += Math.round(Math.random() * -98) + "\t";
-						incidentRow += e.latlng.lat + "\t";
-						incidentRow += e.latlng.lng + "\t";
-						incidentRow += '"Till"\t"iPhone"';
-						incidentRow += "\n";
-						
+						var incidentRow = getIncidentRow(e, feature);
+												
 						console.log(incidentRow);
 						tsvWrite.push(incidentRow);
 					});
@@ -124,29 +113,46 @@
 		
 		map.on('click', function(e) {
 			
-			var from = prompt("From County", "");
-			var to = prompt("To County", "");
-			
-			var incidentRow="";
-			incidentRow += new Date().getTime() + "\t";
-			incidentRow += "n/a\t";
-			incidentRow += from+"\t";
-			incidentRow += "n/a\t";
-			incidentRow += to+"\t";
-			incidentRow += "n/a\t" + mobileProviders[Math.round(Math.random() * mobileProviders.length)] + "\tn/a\t";
-			incidentRow += mobileProviders[Math.round(Math.random() * mobileProviders.length)] + "\t"
-			incidentRow += Math.round(Math.random() * -98) + "\t";
-			incidentRow += e.latlng.lat + "\t";
-			incidentRow += e.latlng.lng + "\t";
-			incidentRow += '"Till"\t"iPhone"';
-			incidentRow += "\n";
+			incidentRow = getIncidentRow(e, null);
 							
 			console.log(incidentRow);
 			tsvWrite.push(incidentRow);
 			
 		});
 
-	
+			function getIncidentRow(e, feature) {
+				var from = "";
+				var to="";
+				if (feature != null) {
+					from = prompt("From Country", feature.properties.ISO_A2);
+					to = prompt("To Country", feature.properties.ISO_A2);
+				}
+				else {
+					from = prompt("From Country", "");
+					to = prompt("To Country", "");
+				}
+				var rssiValue = prompt("RSSI", Math.round(Math.random() * -98));
+
+				var incidentRow="";
+				incidentRow += new Date().getTime() + "\t";
+				incidentRow += "n/a\t";
+				incidentRow += from+"\t";
+				incidentRow += "n/a\t";
+				incidentRow += to+"\t";
+				incidentRow += "n/a\t" + getRandomItem(mobileProviders) + "\tn/a\t";
+				incidentRow += getRandomItem(mobileProviders) + "\t"
+				incidentRow += rssiValue + "\t";
+				incidentRow += e.latlng.lat + "\t";
+				incidentRow += e.latlng.lng + "\t";
+				incidentRow += '"' + getRandomItem(userNames) + '"\t"' + getRandomItem(mobileDevices) + '"';
+				incidentRow += "\n";
+
+				return incidentRow;
+			}
+		
+		function getRandomItem(itemArray) {
+			return itemArray[Math.round(Math.random() * itemArray.length)]
+		}
 		
 
 	</script>

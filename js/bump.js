@@ -8,7 +8,7 @@
 var settings = {
 	incidentsFileName: "data/dummy-incidents.tsv",
 	countriesGeoJsonFilename: "data/europe.geo.json",
-	// tileServerString: 'http://localhost:8888/map/bb-eu/{z}/{x}/{y}.png', // Caravan
+	// tileServerString: 'http://localhost:8888/v2/bb-eu/{z}/{x}/{y}.png', // Caravan
 	tileServerString: 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', // Stamen Toner
 	//tileServerString: 'http://localhost:20008/tile/border-bumps/{z}/{x}/{y}.png?updated=' + new Date().getTime(), // Local TileMill 
 	
@@ -183,6 +183,10 @@ d3.tsv(settings.incidentsFileName, function(data) {
 			
 			//console.log("Creating marker w/ nearest point to " + incident.CurMCC_CountryCode);
 			// FIXME Move cell tower circle into inverse direction sometimes; depending on actual country the incident is in
+			//var point = map.latLngToLayerPoint(incident.latlng);
+			//var contains = closestToLayer._path._containsPoint(point);
+			//console.log("incident: " + incident + ", point: " + point + ", contains:" + contains);
+			
 			center.lat -= nearestPointData.direction[0];
 			center.lng -= nearestPointData.direction[1];
 			
