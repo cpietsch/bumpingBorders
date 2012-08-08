@@ -6,7 +6,7 @@
 // })
 	
 var settings = {
-	incidentsFileName: "data/test-incidents.tsv",
+	incidentsFileName: "data/dummy-incidents.tsv",
 	countriesGeoJsonFilename: "data/europe.geo.json",
 	// tileServerString: 'http://localhost:8888/map/bb-eu/{z}/{x}/{y}.png', // Caravan
 	tileServerString: 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', // Stamen Toner
