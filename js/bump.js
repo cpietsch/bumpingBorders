@@ -449,7 +449,7 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 			var scrollTo = elementOffset.top - 210;
 			container.scrollToPos(scrollTo, 500);
 		} else {
-			container.scrollToPos(0, 500);
+			container.scrollToPos(-2*container[0].scrollTop, 500);
 			var incidentDiv = createPopupText(incidentMarker._incident);
 
 			var itemOuter = $('<div>')

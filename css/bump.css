@@ -58,7 +58,7 @@ html, body {
 	margin:10px 10px 0px 10px;
 	position:relative;
 	cursor:pointer;
-	top:-120px;
+	top:-140px;
 	color: #505050;
 }
 #incidentHistory .active .incidentInner {
