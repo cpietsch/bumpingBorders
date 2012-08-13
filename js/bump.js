@@ -89,7 +89,10 @@ d3.json(settings.countriesGeoJsonFilename, function(collection) {
 	originalCollection = collection;
 
 	addCountriesToMap(collection);
-
+	
+	// remover loader
+	$('#loader').remove();
+	
 	// Load incidents after loading countries
 	loadIncidentData();
 });

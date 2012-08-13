@@ -40,6 +40,20 @@ div#miniMap {
 }
 div#overviewRect { position:relative; top:0px; left:0px; border: 1px solid #ff6360; width:20px; height: 20px; }
 
+
+#loader {
+	
+}
+#loader img {
+
+	float:left;
+	margin:10px;
+}
+#loader .label {
+	float:left;
+padding-top: 11px;
+}
+
 #incidentHistory {
 
 	width:250px;
