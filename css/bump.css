@@ -67,12 +67,13 @@ padding-top: 11px;
 
 #incidentHistory .incidentOuter {
 	height:0px;
+	padding:10px;
+	padding-top:0px;
 }
 #incidentHistory .incidentInner {
 	padding:10px;
 	background: #222;
 	border: 1px solid #313131;
-	margin:10px 10px 0px 10px;
 	position:relative;
 	cursor:pointer;
 	top:-150px;
@@ -81,9 +82,17 @@ padding-top: 11px;
 }
 #incidentHistory .active .incidentInner {
 	padding:10px;
+	background: #EE0F0F;
+	border: 1px solid #FF6161;
+	color: #FFF4F4;
+	
+	text-shadow: 1px 1px 0px #9E000E;
+	filter: dropshadow(color=#9E000E, offx=1, offy=1);
+	/*
 	background: #3C3C3C;
 	border: 1px solid #474747;
 	color: #F0F0F0;
+	*/
 	
 }
 #incidentHistory .incidentInner .name {
@@ -105,9 +114,14 @@ padding-top: 11px;
 }
 
 #incidentHistory .active .separator {
-
+	
+	background: #960000;
+	border-bottom: 1px solid #FF5151;
+	
+	/*
 	background: #333;
 	border-bottom: 1px solid #525252;
+	*/
 
 }
 

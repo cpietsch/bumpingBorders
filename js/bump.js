@@ -464,17 +464,20 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 		var incidentDiv = $('#i'+incidentMarker._index);
 		var container = $('#incidentHistory');
 		container.find('.active').removeClass('active');
-		
-		
+			
 		if (incidentDiv.length > 0) {
-			incidentDiv.addClass('active')
-			var elementOffset = incidentDiv.offset();
-			var scrollTo = elementOffset.top - 210;
-			container.scrollToPos(scrollTo, 500);
+			incidentDiv.addClass('active');
+			var top=incidentDiv.offset().top -210;
+			//console.log(top)
+			container.animate({
+				scrollTop:top
+			},100);
 		} else {
-			container.scrollToPos(-2*container[0].scrollTop, 500);
+			container.animate({
+				scrollTop:0
+			},100);
+			//container.scrollToPos(-2*container[0].scrollTop, 500);
 			var incidentDiv = createPopupText(incidentMarker._incident);
-
 			var itemOuter = $('<div>')
 				.attr('id', 'i' + incidentMarker._index)
 				.addClass('incidentOuter')
@@ -484,10 +487,10 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 					height: 150
 				}, {
 					duration: 1000,
-					easing: "cubic-bezier(0.64, 0, 0.28, 1)"
+					easing: "swing"
 				})
 				.data('incidentIndex', incidentMarker._index)
-				.on("click", function() {
+				.bind("click", function() {
 					var index = $(this).data('incidentIndex');
 					delayMarkerAnimationOnInteraction();
 					lastIncidentMarkerIndex = selectedIncidentMarkerIndex;
@@ -503,7 +506,7 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 					top: 0
 				}, {
 					duration: 1000,
-					easing: "cubic-bezier(0.64, 0, 0.28, 1)"
+					easing: "swing"
 				})
 		}
 	
