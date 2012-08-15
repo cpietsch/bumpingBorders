@@ -95,6 +95,22 @@ d3.json(settings.countriesGeoJsonFilename, function(collection) {
 	
 	// Load incidents after loading countries
 	loadIncidentData();
+	
+	// fiter action
+	var svg = d3.select(map._pathRoot);
+	
+	var defs = svg.append("svg:defs");
+	
+	defs.append("svg:filter")
+	    .attr("id", "blur")
+	  .append("svg:feGaussianBlur")
+	    .attr("stdDeviation", 5);
+
+	defs.append("svg:filter")
+	    .attr("id", "multi")
+	  .append("svg:feBlend")
+	    .attr("mode", "multiply");
+	
 });
 
 function addCountriesToMap(collection) {
@@ -169,16 +185,17 @@ d3.tsv(settings.incidentsFileName, function(data) {
 		
 		// Visual radial expansion style
 		var bigCircle = L.circle(center, radius * 0.8, {
-			fillOpacity:0.3,
-			fillColor:'#FF4757',
+			fillOpacity:0.1,
+			fillColor:'#FF0015',
 			stroke:false,
 			color:'white',
 			weight:4,
 			opacity:0.8,
 		}).addTo(map);
 		var smallCircle = L.circle(center, radius * 0.6, {
-			fillOpacity:0.3,
-			fillColor:'#FF4757',
+			fillOpacity:0.1,
+			fill:true,
+			fillColor:'#FF0015',
 			stroke:false,
 			color:'white',
 			weight:1,
@@ -189,8 +206,8 @@ d3.tsv(settings.incidentsFileName, function(data) {
 		var marker = L.circle(center, radius, {
 		    color: 'white',
 			opacity:1,
-		    fillColor: '#FF4757',
-		    fillOpacity: 0.2,
+		    fillColor: '#FF0015',
+		    fillOpacity: 0.1,
 			stroke:false,
 			weight:5,
 			title: incident.CurCell_Provider,
@@ -201,12 +218,16 @@ d3.tsv(settings.incidentsFileName, function(data) {
 			lastIncidentMarkerIndex = selectedIncidentMarkerIndex;
 			animateToIncident(this, true);
 		});
+		
+		d3.select(marker._path).attr("filter", "url(#blur)");
+		d3.select(smallCircle._path).attr("filter", "url(#multi)");
+		d3.select(bigCircle._path).attr("filter", "url(#multi)");
 
 		// Incident point (center of incident)
 		var incidentCirle = L.circle(incident.latlng, 1000, {
 			fillOpacity:1,
 			fillColor:'#580E05',
-			stroke:true,
+			stroke:false,
 			color:'white',
 			weight:2,
 			opacity:0.8,
@@ -406,16 +427,16 @@ function selectIncident(/* Marker */ incidentMarker) {
 	// reset last marker style
 	var lastMarker = markerArray[lastIncidentMarkerIndex];
 	lastMarker._bigCircle.setStyle({
-		fillColor:'#FF4757',
-		fillOpacity: 0.3
+		//fillColor:'#FF4757',
+		fillOpacity: 0.2
 	});
 	lastMarker._smallCircle.setStyle({
-		fillColor:'#FF4757',
-		fillOpacity: 0.3
+		//fillColor:'#FF4757',
+		fillOpacity: 0.2
 	});
 	lastMarker.setStyle({
-		fillColor:'#FF4757',
-		fillOpacity: 0.2
+		//fillColor:'#FF4757',
+		fillOpacity: 0.1
 	});
 	// set active marker style
 	incidentMarker._bigCircle.setStyle({
