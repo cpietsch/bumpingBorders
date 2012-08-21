@@ -5,6 +5,12 @@ html, body {
 	overflow: ;
 }
 
+.leaflet-control-zoom a {
+	width: 30px;
+	height: 30px;
+}
+
+
 #map {
 	height: auto !important;
 	min-height: 100%;
@@ -15,12 +21,13 @@ html, body {
 }
 
 #sidebar {
-	width:250px;
+	padding-top: 5px;
+	width:240px;
 	position: absolute;
 	top:0px;
 	bottom:0px;
 	right:0px;
-	
+	overflow: hidden;
 	
 	background:#1B1B1B;
 	
@@ -29,6 +36,7 @@ html, body {
 	line-height:1.2em;
 	color:#FFF;
 }
+
 
 div#miniMap {
 	border: 1px solid #313131;
@@ -50,27 +58,56 @@ div#overviewRect {
 
 	float:left;
 	margin:10px;
+	border: none;
 }
 #loader .label {
 	float:left;
 padding-top: 11px;
 }
 
-#incidentHistory {
+#incidentHistoryOuter {
 
 	width:250px;
 
+	
+
+}
+
+#incidentHistory {
+	overflow: hidden;
+	width:227px;
 	position: absolute;
 	top:200px;
-	bottom:0px;
+	bottom:30px;
 	
-	overflow-y:scroll;
+}
+
+#credits {
+	
+	width:227px;
+	position: absolute;
+	bottom:0px;
+	height: 20px;
+	padding-right: 10px;
+	text-align: right;
+
+}
+
+#credits a {
+	color:#505050;
+	text-decoration: none;
+
+
+	text-shadow: 1px 1px 0px #252525;
+	filter: dropshadow(color=#252525, offx=1, offy=1);
+
+	color: #F0F0F0;
 }
 
 #incidentHistory .incidentOuter {
 	height:0px;
-	padding:10px;
-	padding-top:0px;
+	padding-left:10px;
+	padding-top:10px;
 }
 #incidentHistory .incidentInner {
 	padding:10px;
@@ -84,17 +121,20 @@ padding-top: 11px;
 }
 #incidentHistory .active .incidentInner {
 	padding:10px;
+
+	/*
 	background: #EE0F0F;
 	border: 1px solid #FF6161;
 	color: #FFF4F4;
+	*/
 	
-	text-shadow: 1px 1px 0px #9E000E;
-	filter: dropshadow(color=#9E000E, offx=1, offy=1);
-	/*
+	text-shadow: 1px 1px 0px #252525;
+	filter: dropshadow(color=#252525, offx=1, offy=1);
+	
 	background: #3C3C3C;
 	border: 1px solid #474747;
 	color: #F0F0F0;
-	*/
+	
 	
 }
 #incidentHistory .incidentInner .name {
@@ -117,13 +157,14 @@ padding-top: 11px;
 
 #incidentHistory .active .separator {
 	
+	/*
 	background: #960000;
 	border-bottom: 1px solid #FF5151;
+	*/
 	
-	/*
 	background: #333;
 	border-bottom: 1px solid #525252;
-	*/
+	
 
 }
 

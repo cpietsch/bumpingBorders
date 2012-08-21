@@ -8,9 +8,13 @@
 	<meta name="apple-mobile-web-app-capable" content="yes" />  
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
-	<link rel="stylesheet" href="css/bump.css" />
+	
 	<link rel="stylesheet" href="lib/leaflet.css" />
+	<link rel="stylesheet" href="css/bump.css" />
+
 	<link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="lib/jquery.jscrollpane.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	
 	<!--[if lte IE 8]><link rel="stylesheet" href="../dist/leaflet.ie.css" /><![endif]-->
 	
 	<script type="text/javascript" src="lib/leaflet-src.js"></script>
@@ -20,18 +24,21 @@
 
 	<script type="text/javascript" src="js/mercator.js"></script>
 	
-	<style>
-
-	</style>
 </head>
 
 <body>
 	<div id="map" ></div>
 	<div id="sidebar">
 		<div id="miniMap"><div id="overviewRect"></div></div>
-		<div id="incidentHistory">
-			<div id="loader"><img src="img/loader2.gif" width="16" height="16" alt="Loader2"><div class="label">Loading data...</div></div>
-		</div>
+			<div id="incidentHistory">
+				<div id="loader">
+					<img src="img/loader2.gif" width="16" height="16" alt="Loader2">
+					<div class="label">Loading data...</div>
+				</div>
+			</div>
+			<div id="credits">
+				<a href="http://www.borderbumps.net">project information</a>
+			</div>
 	</div>
 
 <script type="text/javascript" src="js/bump.js"></script>

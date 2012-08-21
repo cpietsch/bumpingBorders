@@ -84,6 +84,16 @@ var originalCollection;
 var allCountriesLayer;
 
 
+// scrollpane
+/*
+$(function()
+{
+	$('#incidentHistoryOuter').jScrollPane({
+		autoReinitialise: true
+	});
+});
+*/
+
 // Load country polygons
 d3.json(settings.countriesGeoJsonFilename, function(collection) {
 	originalCollection = collection;
@@ -488,15 +498,19 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 			
 		if (incidentDiv.length > 0) {
 			incidentDiv.addClass('active');
+			/*
 			var top=incidentDiv.offset().top -210;
 			//console.log(top)
 			container.animate({
 				scrollTop:top
 			},100);
+			*/
 		} else {
+			/*
 			container.animate({
 				scrollTop:0
 			},100);
+			*/
 			//container.scrollToPos(-2*container[0].scrollTop, 500);
 			var incidentDiv = createPopupText(incidentMarker._incident);
 			var itemOuter = $('<div>')
@@ -533,7 +547,7 @@ function openIncidentPopup(/* Marker */ incidentMarker) {
 	
 
 		$('#incidentHistory>div').each(function(index, item) {
-			if (index > 30) $(item).remove();
+			if (index > 5) $(item).remove();
 		});
 	}
 }
