@@ -1,0 +1,161 @@
+
+Map {
+  background-color: #aaa;
+}
+
+#countries {
+  polygon-fill: #fff;
+  line-width:0;
+}
+
+#lakes, #lakes-europe {
+  /* Always display big lakes. But smaller ones only if zoomed-in. */
+  [ScaleRank<7], [zoom>6] {
+    polygon-fill: #bbb; /* gray-light-blue: ddddea */
+  }
+}
+
+// with thick outline to be clearly visible on animation
+#country-borders {
+  line-color:rgba(0, 0, 0, 0.09); // d0d0d0
+  line-width: 1;
+  [zoom>2] {
+    line-width: 3;
+  }
+  [zoom>4] {
+    line-width: 8;
+  }
+  [zoom>5] {
+    line-width: 10;
+  }
+  [zoom>8] {
+    line-width: 14;
+  }
+  [zoom>9] {
+    line-width: 16;
+  }
+}
+
+#country-borders::outline {
+  line-width:0.4;
+  [zoom>2] {
+    line-width:1;
+  }
+  line-color:rgb(102,102,102);
+  //line-dasharray:3,3;
+}
+
+/* Only up to 10 to hide Slovenian provinces. */
+#provinces[ScaleRank<10] {
+  [zoom>5] {
+    line-color:rgb(51,51,51); // rgba(0, 0, 0, 0.2);
+    line-width:0.5;
+    line-dasharray:3,3;
+  }
+  [zoom>7] {
+    line-color:rgb(102,102,102); //rgba(0, 0, 0, 0.4);
+  }
+}
+
+#country-names {
+  text-face-name: "Consolas Regular";
+  text-name: "''";
+  text-size:12;
+  text-fill: #000;
+  text-halo-fill: #fafafa;
+  text-halo-radius:2;
+  text-line-spacing:1;
+  text-wrap-width:20;
+  
+  [zoom>4] {
+    text-name: "[NAME]";
+  }
+  [zoom=5] {
+    text-size:14;
+  }
+  [zoom=6] {
+    text-size:16;
+  }
+  [zoom>6] {
+    text-size:22;
+  }
+  
+  [ScaleRank>2] {
+    text-name: "''";
+  }
+  [ScaleRank>2][zoom>6] {
+    text-name: "[NAME]";
+    text-size:16;
+  }
+}
+
+#cities[ADM0CAP=1][SCALERANK<5][zoom>5] {
+    text-face-name: "Consolas Regular";
+    text-name: "[NAME]";
+    text-fill: #000;
+    text-halo-fill: #fafafa;
+    text-halo-radius:2;
+    text-size:14;
+    point-file: url(icons/star-10.png);
+    text-dy: -4;
+}
+
+#cities[SCALERANK<8][zoom>6] {
+    text-face-name: "Consolas Regular";
+    text-name: "[NAME]";
+    text-fill: #000;
+    text-halo-fill: #fafafa;
+    text-halo-radius:2;
+    text-size:12;
+    point-file: url(icons/circle-7.png);
+    text-dy: -4;
+}
+
+// Most OSM 'towns' are smaller than above cities.
+// (There might be overlapping / two labels for one, but did not find any.)
+#osm-places-towns[type="town"][zoom>7] {
+  text-face-name: "Consolas Regular";
+  text-name: "[name]";
+  text-halo-fill: #fafafa;
+  text-halo-radius:1;
+  text-fill: #222;
+  text-size:6;
+  [zoom>8] {
+    text-fill: #222;
+    text-size:10;
+  }  
+}
+
+// Using 'casing' allows dashed railway lines with outline
+#railways {
+  [zoom>8] {
+    casing/line-width:2;
+    casing/line-color:rgba(0, 0, 0, 0.1);
+    line-dasharray:5,3;
+    line-color:#fff;
+    line-width:1;
+  }
+}
+
+#roadshighways[type="motorway"] {
+  [zoom>6] {
+    line-width:1;
+    line-color:rgba(0, 0, 0, 0.2);
+  }
+  [zoom>7] {
+    line-color:rgba(0, 0, 0, 0.3);
+  }
+  [zoom>7] {
+    line-width:2;
+  }
+}
+
+/* motorway-trunk 
+#roads-osm[type="trunk"] {
+  [zoom>7] {
+    line-width:1;
+    line-color:rgba(0, 0, 0, 0.3);
+  }
+}
+*/
+
