@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Make a Country GeoJson</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="lib/leaflet.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="../dist/leaflet.ie.css" /><![endif]-->
+	<style>
+		#save {
+			
+			background:#FFF;
+			font-family:Helvetica;
+			font-size:10px;
+			
+			border:1px solid #EEE;
+		}
+	</style>
+</head>
+<body>
+	<div id="map" style="width: 800px; height: 400px"></div>
+	this script lets you to select countries from a big geoJson file in order to create a slimmer geoJson file, but it crashes on countries with a large number of points
+	<button id="save" style="">save jsonRead</button>
+	<br>
+
+	
+	<script>
+		//L_PREFER_CANVAS=true;
+		//turn on canvas rendering CRASY !
+	</script>
+	<script src="lib/leaflet-src.js"></script>
+	<script type="text/javascript" src="lib/d3.v2.js"></script>
+	<script type="text/javascript" src="lib/d3.tsv.js"></script>
+	<script type="text/javascript" src="lib/json.js"></script>
+	
+
+	<script>
+	
+	
+		var map = L.map('map',{
+			inertia:false,
+		//	fadeAnimation:true,
+		//	zoomAnimation:true
+			
+		}).setView([48, 12], 2);
+		
+		var scale =L.control.scale().addTo(map);
+	
+		L.tileLayer('http://{s}.tile.stamen.com/toner-background/{z}/{x}/{y}.jpg').addTo(map);
+		
+		var jsonWrite={
+			type: "FeatureCollection",
+			features:[]
+		};
+
+		d3.json("data/ne_10m_admin_0_countries.json", function(jsonRead) {
+			var i =0;
+			console.log(jsonRead);
+			
+			L.geoJson(jsonRead, {
+
+				style: function (feature) {
+					var myStyle = {
+					    "color": "black",
+					    "weight": 2,
+					    "opacity": 1,
+						"fillColor": "blue",
+						"fill": true
+					};
+					//console.log(feature)
+					return myStyle;
+				},
+				
+				onEachFeature: function (feature, layer) {
+					
+					layer.featureId=i;
+					
+					console.log("loaded",i,jsonRead.features[i].properties.abbrev)
+
+					layer.on('click', function(e) {
+						console.log("write",feature.properties.abbrev, jsonRead.features[this.featureId].properties.abbrev);
+						jsonWrite.features.push(jsonRead.features[this.featureId]);
+						console.log("jsonWriteSize",jsonWrite.features.length);
+						
+						layer.setStyle({
+							fill:false,
+							clickable:false
+						})
+					});
+					i++;
+				}
+
+			}).addTo(map);
+			
+			
+			d3.select('#save').on('click', function(e) {
+				window.open("data:text/jsonRead;charset=utf-8," + escape(JSON.stringify(jsonWrite)))
+			});
+			
+		});
+		
+		
+		
+		
+		
+		map.on('click', function(e) {
+	
+		});
+
+	
+		
+
+	</script>
+
+</body>
+</html>

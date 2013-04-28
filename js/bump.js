@@ -139,9 +139,10 @@ function addCountriesToMap(collection) {
 		},
 	
 		onEachFeature: function (feature, layer) {
-			var countryCode = feature.properties.ISO_A2;
+			var countryCode = feature.properties.ISO_A2 || feature.properties.iso_a2;
+
 			if (countryLayerMap[countryCode] !== undefined){
-				console.warn("Country geometry already exists! " + countryCode);
+				console.warn("Country geometry already exists! " + countryCode, feature.properties);
 			}
 		
 			if (layer._layers !== undefined) {
